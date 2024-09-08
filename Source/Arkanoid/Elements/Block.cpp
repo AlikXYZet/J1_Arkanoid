@@ -26,7 +26,7 @@ ABlock::ABlock()
 	// Корневой компонент
 	BlockMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Block Mesh"));
 	RootComponent = BlockMesh;
-	BlockMesh->SetRelativeScale3D(FVector(0.1f, 0.5f, 0.5f));
+	BlockMesh->SetRelativeScale3D(FVector(0.1f, 0.5f, 0.4f));
 	//-------------------------------------------
 }
 //--------------------------------------------------------------------------------------
