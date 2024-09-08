@@ -36,12 +36,6 @@ public:
 
 protected:
 
-	/* ---   Base   --- */
-
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-	//-------------------------------------------
-
 
 
 	/* ---   Input   --- */
@@ -56,14 +50,6 @@ protected:
 
 
 public:
-
-	/* ---   Base   --- */
-
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-	//-------------------------------------------
-
-
 
 	/* ---   Components   --- */
 

@@ -35,12 +35,6 @@ void ABlocksGenerator::BeginPlay()
 	StartGenerator();
 	//-------------------------------------------
 }
-
-// Called every frame
-void ABlocksGenerator::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
 //--------------------------------------------------------------------------------------
 
 

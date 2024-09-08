@@ -67,14 +67,6 @@ protected:
 
 public:
 
-	/* ---   Base   --- */
-
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-	//-------------------------------------------
-
-
-
 	/* ---   Generator   --- */
 
 	// Тип генерации

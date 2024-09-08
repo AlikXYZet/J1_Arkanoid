@@ -6,7 +6,6 @@
 // Interaction:
 #include "Arkanoid/Tools/MyRandom.h"
 #include "Gift.h"
-#include "Ball.h"
 //--------------------------------------------------------------------------------------
 
 
@@ -27,6 +26,7 @@ ABlock::ABlock()
 	BlockMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Block Mesh"));
 	RootComponent = BlockMesh;
 	BlockMesh->SetRelativeScale3D(FVector(0.1f, 0.5f, 0.4f));
+	BlockMesh->SetCastShadow(false);
 	//-------------------------------------------
 }
 //--------------------------------------------------------------------------------------
@@ -40,17 +40,9 @@ void ABlock::BeginPlay()
 {
 	Super::BeginPlay();
 
-	BlockMesh->OnComponentHit.AddDynamic(this, &ABlock::OnBlockHit);
-
 	NumLives = GetRandom(0, LivesMaterials.Num() - 1);
 
 	SetBlockMaterial();
-}
-
-// Called every frame
-void ABlock::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }
 //--------------------------------------------------------------------------------------
 
@@ -58,25 +50,18 @@ void ABlock::Tick(float DeltaTime)
 
 /* ---   Destroyed   --- */
 
-void ABlock::OnBlockHit(
-	UPrimitiveComponent* HitComp,
-	AActor* OtherActor,
-	UPrimitiveComponent* OtherComp,
-	FVector NormalImpulse,
-	const FHitResult& Hit)
-{
-	if (OtherActor && Cast<ABall>(OtherActor))
-	{
-		SetBlockMaterial();
-	}
-	// PS: Возможно потребуется заменить "Cast" на группирование объектов по коллизии
-}
-
 void ABlock::Destroyed()
 {
 	SpawnGift();
 
 	Super::Destroyed();
+}
+
+void ABlock::SpawnGift()
+{
+	GetWorld()->SpawnActor<AGift>(GetActorLocation(), FRotator());
+
+	// PS: Требуется добавить шанс появления того или иного бонуса из конкретного списка
 }
 
 void ABlock::SetBlockMaterial()
@@ -99,12 +84,5 @@ void ABlock::SetBlockMaterial()
 		BlockMesh->SetMaterial(0, LivesMaterials[NumLives]);
 		--NumLives;
 	}
-}
-
-void ABlock::SpawnGift()
-{
-	GetWorld()->SpawnActor<AGift>(GetActorLocation(), FRotator());
-
-	// PS: Требуется добавить шанс появления того или иного бонуса из конкретного списка
 }
 //--------------------------------------------------------------------------------------

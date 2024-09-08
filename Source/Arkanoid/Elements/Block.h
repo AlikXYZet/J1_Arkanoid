@@ -41,11 +41,6 @@ protected:
 	/** Вызывается, когда этот субъект явно уничтожается во время игрового процесса или в редакторе, но не вызывается во время потоковой передачи уровней или завершения игрового процесса */
 	virtual void Destroyed() override;
 
-	/** Установить материал блока согласно его уровню жизни
-	@note	Запускает уничтожение Блока при Количестве жизней меньше 0
-	*/
-	void SetBlockMaterial();
-
 	/** Создаёт подарок (бонус/антибонус) */
 	void SpawnGift();
 	//-------------------------------------------
@@ -53,14 +48,6 @@ protected:
 
 
 public:
-
-	/* ---   Base   --- */
-
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-	//-------------------------------------------
-
-
 
 	/* ---   Components   --- */
 
@@ -77,14 +64,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Block", NoClear)
 	TArray<UMaterial*> LivesMaterials;
 
-	/**	Событие, когда этот субъект соприкасается с другим */
-	UFUNCTION()
-	virtual void OnBlockHit(
-		class UPrimitiveComponent* HitComp,
-		AActor* OtherActor,
-		UPrimitiveComponent* OtherComp,
-		FVector NormalImpulse,
-		const FHitResult& Hit);
+	/** Установить материал блока согласно его уровню жизни
+	@note	Запускает уничтожение Блока при Количестве жизней меньше 0
+	*/
+	void SetBlockMaterial();
 	//-------------------------------------------
 
 

@@ -29,6 +29,7 @@ AArk_VausPawn::AArk_VausPawn()
 	VausMesh->SetupAttachment(RootComponent);
 	VausMesh->SetRelativeLocation(FVector(-460.f, 0.f, 45.f));
 	VausMesh->SetRelativeScale3D(FVector(0.1f, 1.f, 0.4f));
+	VausMesh->SetCastShadow(false);
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(RootComponent);
@@ -45,21 +46,6 @@ AArk_VausPawn::AArk_VausPawn()
 	// Warning: Данный способ дважды ввызывает PossessedBy(*)
 	//-------------------------------------------
 }
-
-
-
-/* ---   Base   --- */
-
-void AArk_VausPawn::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-void AArk_VausPawn::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-//--------------------------------------------------------------------------------------
 
 
 

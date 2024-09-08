@@ -37,16 +37,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+
+
 public:
-
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	/**	Событие, когда этот субъект накладывается на другого субъекта */
-	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
-	//-------------------------------------------
-
-
 
 	/* ---   Components   --- */
 
@@ -69,4 +62,17 @@ public:
 
 	//-------------------------------------------
 
+
+
+	/* ---   Hit   --- */
+
+	/**	Событие, когда этот субъект соприкасается с другим */
+	UFUNCTION()
+	virtual void OnBlockHit(
+		class UPrimitiveComponent* HitComp,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		FVector NormalImpulse,
+		const FHitResult& Hit);
+	//--------------------------------------------------------------------------------------
 };

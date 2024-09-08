@@ -5,6 +5,7 @@
 
 // UE4
 #include "GameFramework/KillZVolume.h"
+#include "Block.h"
 //--------------------------------------------------------------------------------------
 
 
@@ -25,6 +26,7 @@ ABall::ABall()
 	BallMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ball Mesh"));
 	RootComponent = BallMesh;
 	BallMesh->SetRelativeScale3D(FVector(0.2f));
+	BallMesh->SetCastShadow(false);
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile Movement"));
 	// Настройки отскока (идеально упругий мяч):
@@ -54,28 +56,7 @@ void ABall::BeginPlay()
 {
 	Super::BeginPlay();
 
-}
-
-// Called every frame
-void ABall::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
-void ABall::NotifyActorBeginOverlap(AActor* OtherActor)
-{
-	Super::NotifyActorBeginOverlap(OtherActor);
-
-	// Проверка на AKillZVolume
-	if (Cast<AKillZVolume>(OtherActor))
-	{
-		Destroy();
-	}
-	else
-	{
-		GetVelocity();
-	}
+	BallMesh->OnComponentHit.AddDynamic(this, &ABall::OnBlockHit);
 }
 //--------------------------------------------------------------------------------------
 
@@ -90,3 +71,30 @@ void ABall::SetVelocity(const float& iNewVelocity)
 //--------------------------------------------------------------------------------------
 
 
+
+/* ---   Hit   --- */
+
+void ABall::OnBlockHit(
+	UPrimitiveComponent* HitComp,
+	AActor* OtherActor,
+	UPrimitiveComponent* OtherComp,
+	FVector NormalImpulse,
+	const FHitResult& Hit)
+{
+	if (Cast<AKillZVolume>(OtherActor))
+	{
+		Destroy();
+	}
+	else
+	{
+		GetVelocity();
+
+		if (ABlock* lHitBlock = Cast<ABlock>(OtherActor))
+		{
+			lHitBlock->SetBlockMaterial();
+		}
+	}
+
+	// PS: Возможно потребуется заменить "Cast" на группирование объектов по коллизии
+}
+//--------------------------------------------------------------------------------------
