@@ -65,8 +65,6 @@ void ABlock::OnBlockHit(
 	FVector NormalImpulse,
 	const FHitResult& Hit)
 {
-	UE_LOG(LogTemp, Warning, TEXT("ABlock::OnBlockHit"));
-
 	if (OtherActor && Cast<ABall>(OtherActor))
 	{
 		SetBlockMaterial();
