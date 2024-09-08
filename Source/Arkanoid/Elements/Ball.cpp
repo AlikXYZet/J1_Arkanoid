@@ -24,7 +24,7 @@ ABall::ABall()
 	// Корневой компонент
 	BallMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ball Mesh"));
 	RootComponent = BallMesh;
-	BallMesh->SetRelativeScale3D(FVector(0.1f));
+	BallMesh->SetRelativeScale3D(FVector(0.2f));
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile Movement"));
 	// Настройки отскока (идеально упругий мяч):
@@ -38,7 +38,7 @@ ABall::ABall()
 
 
 
-	/* ---   Предварительные знаячения   --- */
+	/* ---   Предварительные значения   --- */
 
 	SetVelocity(500.f);
 	//-------------------------------------------

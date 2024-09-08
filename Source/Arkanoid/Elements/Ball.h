@@ -42,7 +42,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-
+	/**	Событие, когда этот субъект накладывается на другого субъекта */
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 	//-------------------------------------------
 
