@@ -6,6 +6,10 @@
 // UE:
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
+#include "Components/SphereComponent.h"
+
+// Interaction:
+#include "Arkanoid/Elements/Ball.h"
 //--------------------------------------------------------------------------------------
 
 
@@ -55,7 +59,18 @@ void AArk_VausPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 {
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
+
+
+	/* ---   Action   --- */
+
+	PlayerInputComponent->BindAction("BallLaunch", EInputEvent::IE_Released, this, &AArk_VausPawn::BallLaunch);
+	//-------------------------------------------
+
+
+	/* ---   Axis   --- */
+
 	PlayerInputComponent->BindAxis("MoveVaus", this, &AArk_VausPawn::MoveVaus);
+	//-------------------------------------------
 }
 
 void AArk_VausPawn::MoveVaus(const float iValue)
@@ -63,8 +78,45 @@ void AArk_VausPawn::MoveVaus(const float iValue)
 	if (iValue != 0.f && abs(iValue) <= 1.f)
 	{
 		VausMesh->AddWorldOffset(FVector::YAxisVector * iValue * MoveCoeff, true);
+
+		// Контроль спавна мяча в направлении движения
+		if (SpawnYaw > 0 && iValue > 0)
+		{
+			SpawnYaw = abs(SpawnYaw);
+		}
+		else if (SpawnYaw < 0 && iValue < 0)
+		{
+			SpawnYaw *= -1;
+		}
 	}
 }
+
+void AArk_VausPawn::BallLaunch()
+{
+	if (NumBalls > 0)
+	{
+		// Параметр спавна: Не создавать, если что-то мешает
+		FActorSpawnParameters lSpawnParameters = FActorSpawnParameters();
+		lSpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::DontSpawnIfColliding;
+
+		ABall* lBlock = GetWorld()->SpawnActor<ABall>(
+			BallType.Get(),
+			VausMesh->GetComponentLocation() + FVector(20.f, 0.f, 0.f),
+			FRotator(0.f, SpawnYaw, 0.f),
+			lSpawnParameters);
+
+		// Если мяч создан, то уменьшить счётчик
+		if (lBlock)
+		{
+			--NumBalls;
+		}
+	}
+}
+//--------------------------------------------------------------------------------------
+
+
+
+/* ---   Gift   --- */
 
 void AArk_VausPawn::AddMoveCoeff()
 {
@@ -74,5 +126,10 @@ void AArk_VausPawn::AddMoveCoeff()
 void AArk_VausPawn::DecMoveCoeff()
 {
 	MoveCoeff /= 1.1f;
+}
+
+void AArk_VausPawn::AddOneBall()
+{
+	++NumBalls;
 }
 //--------------------------------------------------------------------------------------

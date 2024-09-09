@@ -70,11 +70,11 @@ public:
 	/* ---   Generator   --- */
 
 	// Тип генерации
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Generator", NoClear)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Generator")
 	EGenerationType GenerationType;
 
 	// Тип генерируемого блока
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Generator", NoClear)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Generator")
 	TSubclassOf<ABlock> BlockType;
 
 	// Зазор между блоками
