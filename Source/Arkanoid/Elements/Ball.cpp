@@ -5,6 +5,7 @@
 
 // UE:
 #include "GameFramework/KillZVolume.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 
 // Interaction:
 #include "Block.h"
@@ -36,72 +37,66 @@ ABall::ABall()
 	ProjectileMovement->Bounciness = 1.f;
 	ProjectileMovement->Friction = 0.f;
 	// Ограничения движения по плостости (без изменения по Z-оси):
+	ProjectileMovement->ProjectileGravityScale = 0.f;
 	ProjectileMovement->bConstrainToPlane = true;
 	ProjectileMovement->SetPlaneConstraintAxisSetting(EPlaneConstraintAxisSetting::Z);
-	//-------------------------------------------
-
-
-
-	/* ---   Предварительные значения   --- */
-
-	SetVelocity(500.f);
+	ProjectileMovement->InitialSpeed = StartingVelocity;
 	//-------------------------------------------
 }
 //--------------------------------------------------------------------------------------
 
 
 
-/* ---   Base   --- */
+/* ---   Collision   --- */
 
-// Called when the game starts or when spawned
-void ABall::BeginPlay()
-{
-	Super::BeginPlay();
-
-	BallMesh->OnComponentHit.AddDynamic(this, &ABall::OnBlockHit);
-}
-//--------------------------------------------------------------------------------------
-
-
-
-/* ---   Hit   --- */
-
-void ABall::OnBlockHit(
-	UPrimitiveComponent* HitComp,
-	AActor* OtherActor,
+void ABall::NotifyHit(
+	UPrimitiveComponent* MyComp,
+	AActor* Other,
 	UPrimitiveComponent* OtherComp,
+	bool bSelfMoved,
+	FVector HitLocation,
+	FVector HitNormal,
 	FVector NormalImpulse,
 	const FHitResult& Hit)
 {
+	Super::NotifyHit(
+		MyComp,
+		Other,
+		OtherComp,
+		bSelfMoved,
+		HitLocation,
+		HitNormal,
+		NormalImpulse,
+		Hit);
+
+	if (ABlock* lHitBlock = Cast<ABlock>(Other))
+	{
+		lHitBlock->ReductionLives();
+	}
+}
+
+void ABall::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorBeginOverlap(OtherActor);
+
 	if (Cast<AKillZVolume>(OtherActor))
 	{
 		Destroy();
 	}
-	else
-	{
-		GetVelocity();
-
-		if (ABlock* lHitBlock = Cast<ABlock>(OtherActor))
-		{
-			lHitBlock->ReductionLives();
-		}
-	}
-
-	// PS: Возможно потребуется заменить "Cast" на группирование объектов по коллизии
 }
 //--------------------------------------------------------------------------------------
 
 
 
-/* ---   Velocity   --- */
+/* ---   Gift   --- */
 
-void ABall::SetVelocity(const float& iNewValue)
+void ABall::SetVelocity(const float iNewValue)
 {
-	ProjectileMovement->InitialSpeed = iNewValue;
+	ProjectileMovement->Velocity = ProjectileMovement->Velocity.GetSafeNormal() * iNewValue;
 }
 
-void ABall::AddVelocity(const float& iAddValue)
+void ABall::AddVelocity(const float iAddValue)
 {
-	ProjectileMovement->InitialSpeed += iAddValue;
+	ProjectileMovement->Velocity += ProjectileMovement->Velocity.GetSafeNormal() * iAddValue;
 }
 //--------------------------------------------------------------------------------------

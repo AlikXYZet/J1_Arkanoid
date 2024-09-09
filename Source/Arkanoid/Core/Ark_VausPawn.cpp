@@ -80,11 +80,11 @@ void AArk_VausPawn::MoveVaus(const float iValue)
 		VausMesh->AddWorldOffset(FVector::YAxisVector * iValue * MoveCoeff, true);
 
 		// Контроль спавна мяча в направлении движения
-		if (SpawnYaw > 0 && iValue > 0)
+		if (SpawnYaw < 0 && iValue > 0)
 		{
 			SpawnYaw = abs(SpawnYaw);
 		}
-		else if (SpawnYaw < 0 && iValue < 0)
+		else if (SpawnYaw > 0 && iValue < 0)
 		{
 			SpawnYaw *= -1;
 		}

@@ -6,11 +6,16 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 
-// UE4:
-#include "GameFramework/ProjectileMovementComponent.h"
-
 // Generated:
 #include "Ball.generated.h"
+//--------------------------------------------------------------------------------------
+
+
+
+/* ---   Pre-declaration of classes   --- */
+
+// UE:
+class UProjectileMovementComponent;
 //--------------------------------------------------------------------------------------
 
 
@@ -36,33 +41,39 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* BallMesh = nullptr;
 
+	/** Компонент передвижения мяча */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement;
 	//-------------------------------------------
 
 
 
-protected:
-
-	/* ---   Base   --- */
-
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-
-
 public:
 
-	/* ---   Hit   --- */
+	/* ---   Velocity   --- */
+
+	// Начальная (стартовая) скорость
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Velocity")
+	float StartingVelocity = 500.f;
+	//--------------------------------------------------------------------------------------
+
+
+
+	/* ---   Collision   --- */
 
 	/**	Событие, когда этот субъект соприкасается с другим */
-	UFUNCTION()
-	virtual void OnBlockHit(
-		class UPrimitiveComponent* HitComp,
-		AActor* OtherActor,
-		UPrimitiveComponent* OtherComp,
+	virtual void NotifyHit(
+		class UPrimitiveComponent* MyComp,
+		AActor* Other,
+		class UPrimitiveComponent* OtherComp,
+		bool bSelfMoved,
+		FVector HitLocation,
+		FVector HitNormal,
 		FVector NormalImpulse,
-		const FHitResult& Hit);
+		const FHitResult& Hit) override;
+
+	/**	Событие, когда этот субъект перекрывается с другим */
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 	//--------------------------------------------------------------------------------------
 
 
@@ -71,10 +82,10 @@ public:
 
 	/** Установка нового значения скорости мяча */
 	UFUNCTION(BlueprintCallable, Category = "Gift")
-	void SetVelocity(const float& NewValue = 1.f);
+	void SetVelocity(const float NewValue = 1.f);
 
 	/** Добавление скорости мяча */
 	UFUNCTION(BlueprintCallable, Category = "Gift")
-	void AddVelocity(const float& AddValue = 0.1f);
+	void AddVelocity(const float AddValue = 0.1f);
 	//-------------------------------------------
 };
