@@ -64,16 +64,6 @@ void ABall::BeginPlay()
 
 
 
-/* ---   Velocity   --- */
-
-void ABall::SetVelocity(const float& iNewVelocity)
-{
-	ProjectileMovement->InitialSpeed = iNewVelocity;
-}
-//--------------------------------------------------------------------------------------
-
-
-
 /* ---   Hit   --- */
 
 void ABall::OnBlockHit(
@@ -93,10 +83,25 @@ void ABall::OnBlockHit(
 
 		if (ABlock* lHitBlock = Cast<ABlock>(OtherActor))
 		{
-			lHitBlock->SetBlockMaterial();
+			lHitBlock->ReductionLives();
 		}
 	}
 
 	// PS: Возможно потребуется заменить "Cast" на группирование объектов по коллизии
+}
+//--------------------------------------------------------------------------------------
+
+
+
+/* ---   Velocity   --- */
+
+void ABall::SetVelocity(const float& iNewValue)
+{
+	ProjectileMovement->InitialSpeed = iNewValue;
+}
+
+void ABall::AddVelocity(const float& iAddValue)
+{
+	ProjectileMovement->InitialSpeed += iAddValue;
 }
 //--------------------------------------------------------------------------------------

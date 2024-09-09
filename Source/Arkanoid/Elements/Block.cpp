@@ -42,7 +42,7 @@ void ABlock::BeginPlay()
 
 	NumLives = GetRandom(0, LivesMaterials.Num() - 1);
 
-	SetBlockMaterial();
+	ReductionLives();
 }
 //--------------------------------------------------------------------------------------
 
@@ -64,7 +64,7 @@ void ABlock::SpawnGift()
 	// PS: Требуется добавить шанс появления того или иного бонуса из конкретного списка
 }
 
-void ABlock::SetBlockMaterial()
+void ABlock::ReductionLives()
 {
 	// Проверка на валидность элемента массива
 	while (NumLives >= 0

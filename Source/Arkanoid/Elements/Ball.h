@@ -30,17 +30,6 @@ public:
 
 
 
-	/* ---   Base   --- */
-
-protected:
-
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-
-
-public:
-
 	/* ---   Components   --- */
 
 	/** Меш визуализации мяча */
@@ -53,16 +42,16 @@ public:
 
 
 
-	/* ---   Velocity   --- */
+protected:
 
-	/** Установка новой скорости мяча
-	* @param	iNewVelocity - Новое значение скорости
-	*/
-	void SetVelocity(const float& iNewVelocity);
+	/* ---   Base   --- */
 
-	//-------------------------------------------
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
 
+
+public:
 
 	/* ---   Hit   --- */
 
@@ -75,4 +64,17 @@ public:
 		FVector NormalImpulse,
 		const FHitResult& Hit);
 	//--------------------------------------------------------------------------------------
+
+
+
+	/* ---   Gift   --- */
+
+	/** Установка нового значения скорости мяча */
+	UFUNCTION(BlueprintCallable, Category = "Gift")
+	void SetVelocity(const float& NewValue = 1.f);
+
+	/** Добавление скорости мяча */
+	UFUNCTION(BlueprintCallable, Category = "Gift")
+	void AddVelocity(const float& AddValue = 0.1f);
+	//-------------------------------------------
 };

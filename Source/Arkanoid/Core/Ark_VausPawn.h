@@ -39,20 +39,6 @@ public:
 
 
 
-protected:
-
-
-
-	/* ---   Input   --- */
-
-	/** Позволяет пешке настраивать пользовательские привязки ввода. Вызывается при владении устройством PlayerController с использованием InputComponent, созданного CreatePlayerInputComponent(). */
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	//-------------------------------------------
-
-
-
-public:
-
 	/* ---   Components   --- */
 
 	/** Меш визуализации каретки */
@@ -65,6 +51,18 @@ public:
 	//-------------------------------------------
 
 
+
+protected:
+
+	/* ---   Input   --- */
+
+	/** Позволяет пешке настраивать пользовательские привязки ввода. Вызывается при владении устройством PlayerController с использованием InputComponent, созданного CreatePlayerInputComponent(). */
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	//-------------------------------------------
+
+
+
+public:
 
 	/* ---   Vaus State   --- */
 
@@ -80,14 +78,17 @@ public:
 
 	/* ---   Gift   --- */
 
-	/** Увеличить Коэффициент перемещения на 10% */
-	void AddMoveCoeff();
+	/** Установка нового значения Коэффициента перемещения */
+	UFUNCTION(BlueprintCallable, Category = "Gift")
+	void SetMoveCoeff(const float& NewValue = 2.f);
 
-	/** Уменьшить Коэффициент перемещения на 10% */
-	void DecMoveCoeff();
+	/** Добавление Коэффициента перемещения */
+	UFUNCTION(BlueprintCallable, Category = "Gift")
+	void AddMoveCoeff(const float& AddValue = 0.1f);
 
-	/** Добавить один Мяч в копилку */
-	void AddOneBall();
+	/** Добавить какое-то количество Мячей в копилку */
+	UFUNCTION(BlueprintCallable, Category = "Gift")
+	void AddBalls(const int32& AddValue = 1);
 	//-------------------------------------------
 
 
@@ -101,6 +102,8 @@ private:
 
 	// Смещение спавна по Yaw
 	float SpawnYaw = 30;
+
+	//
 
 	/** Смещение каретки вдоль оси Y с учётом коллизии и Коэффициентом перемещения */
 	void MoveVaus(const float iValue);
