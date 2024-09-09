@@ -30,7 +30,7 @@ struct FGiftType
 	TSubclassOf<AGift> GiftType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float AppearanceChance;
+	float AppearanceChance = 1.f;
 };
 
 

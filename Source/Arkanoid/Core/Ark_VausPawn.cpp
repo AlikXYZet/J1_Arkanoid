@@ -118,17 +118,17 @@ void AArk_VausPawn::BallLaunch()
 
 /* ---   Gift   --- */
 
-void AArk_VausPawn::SetMoveCoeff(const float& iNewValue)
+void AArk_VausPawn::SetMoveCoeff(const float iNewValue)
 {
 	MoveCoeff = iNewValue;
 }
 
-void AArk_VausPawn::AddMoveCoeff(const float& iAddValue)
+void AArk_VausPawn::AddMoveCoeff(const float iAddValue)
 {
 	MoveCoeff *= 1.f + iAddValue;
 }
 
-void AArk_VausPawn::AddBalls(const int32& iAddValue)
+void AArk_VausPawn::AddBalls(const int32 iAddValue)
 {
 	NumBalls += iAddValue;
 }

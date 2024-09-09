@@ -90,13 +90,33 @@ void ABall::NotifyActorBeginOverlap(AActor* OtherActor)
 
 /* ---   Gift   --- */
 
-void ABall::SetVelocity(const float iNewValue)
+void ABall::SetVelocity(float iNewValue)
 {
+	if (iNewValue < MinVelocity)
+	{
+		iNewValue = MinVelocity;
+	}
+
 	ProjectileMovement->Velocity = ProjectileMovement->Velocity.GetSafeNormal() * iNewValue;
 }
 
-void ABall::AddVelocity(const float iAddValue)
+void ABall::AddVelocity(float iAddValue)
 {
-	ProjectileMovement->Velocity += ProjectileMovement->Velocity.GetSafeNormal() * iAddValue;
+	FVector lDirection;
+	float lLenght;
+
+	ProjectileMovement->Velocity.ToDirectionAndLength(lDirection, lLenght);
+
+	if (lLenght != MinVelocity && iAddValue)
+	{
+		lLenght += iAddValue;
+
+		if (lLenght < MinVelocity)
+		{
+			lLenght = MinVelocity;
+		}
+
+		ProjectileMovement->Velocity = lDirection * lLenght;
+	}
 }
 //--------------------------------------------------------------------------------------

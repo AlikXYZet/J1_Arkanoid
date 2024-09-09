@@ -55,6 +55,10 @@ public:
 	// Начальная (стартовая) скорость
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Velocity")
 	float StartingVelocity = 500.f;
+
+	// Минимальная скорость
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Velocity")
+	float MinVelocity = 50.f;
 	//--------------------------------------------------------------------------------------
 
 
@@ -82,10 +86,10 @@ public:
 
 	/** Установка нового значения скорости мяча */
 	UFUNCTION(BlueprintCallable, Category = "Gift")
-	void SetVelocity(const float NewValue = 1.f);
+	void SetVelocity(float NewValue = 500.f);
 
 	/** Добавление скорости мяча */
 	UFUNCTION(BlueprintCallable, Category = "Gift")
-	void AddVelocity(const float AddValue = 0.1f);
+	void AddVelocity(float AddValue = 50.f);
 	//-------------------------------------------
 };

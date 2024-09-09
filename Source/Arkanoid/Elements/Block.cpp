@@ -95,7 +95,10 @@ void ABlock::SpawnGift()
 		// Расчёт максимального значения
 		for (FGiftType Data : Gifts)
 		{
-			lRand += Data.AppearanceChance;
+			if (Data.AppearanceChance > 0)
+			{
+				lRand += Data.AppearanceChance;
+			}
 		}
 
 		// Получение шанса
@@ -104,16 +107,19 @@ void ABlock::SpawnGift()
 		// Выбор согласно шансу
 		for (FGiftType Data : Gifts)
 		{
-			lRand -= Data.AppearanceChance;
-
-			if (lRand < 0)
+			if (Data.AppearanceChance > 0)
 			{
-				GetWorld()->SpawnActor<AGift>(
-					Data.GiftType.Get(), 
-					GetActorLocation(), 
-					FRotator());
+				lRand -= Data.AppearanceChance;
 
-				break; // Выход из цикла
+				if (lRand < 0)
+				{
+					GetWorld()->SpawnActor<AGift>(
+						Data.GiftType.Get(),
+						GetActorLocation(),
+						FRotator());
+
+					break; // Выход из цикла
+				}
 			}
 		}
 	}

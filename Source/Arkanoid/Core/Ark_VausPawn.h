@@ -80,15 +80,15 @@ public:
 
 	/** Установка нового значения Коэффициента перемещения */
 	UFUNCTION(BlueprintCallable, Category = "Gift")
-	void SetMoveCoeff(const float& NewValue = 2.f);
+	void SetMoveCoeff(const float NewValue = 2.f);
 
 	/** Добавление Коэффициента перемещения */
 	UFUNCTION(BlueprintCallable, Category = "Gift")
-	void AddMoveCoeff(const float& AddValue = 0.1f);
+	void AddMoveCoeff(const float AddValue = 0.1f);
 
 	/** Добавить какое-то количество Мячей в копилку */
 	UFUNCTION(BlueprintCallable, Category = "Gift")
-	void AddBalls(const int32& AddValue = 1);
+	void AddBalls(const int32 AddValue = 1);
 	//-------------------------------------------
 
 
