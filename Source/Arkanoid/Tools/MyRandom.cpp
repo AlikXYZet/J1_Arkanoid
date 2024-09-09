@@ -1,6 +1,6 @@
 ﻿#include "MyRandom.h"
 
-int32 GetRandom(const int32& min, const int32& max)
+int32 GetRandom(const int32& max, const int32& min)
 {
 	std::random_device rd;
 	std::mt19937 gen(rd());
@@ -9,16 +9,16 @@ int32 GetRandom(const int32& min, const int32& max)
 	return distrib(gen);
 }
 
-bool GetRandom()
+bool GetRandom(const float& iChance)
 {
 	std::random_device rd;
 	std::mt19937 gen(rd());
-	std::bernoulli_distribution d(0.5);
+	std::bernoulli_distribution d(iChance);
 
 	return d(gen);
 }
 
-float GetRandomFloat(const float& min, const float& max)
+float GetRandomFloat(const float& max, const float& min)
 {
 	return GetRandom(min * 256, max * 256) / static_cast<float>(256);
 }

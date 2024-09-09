@@ -2,25 +2,85 @@
 
 #pragma once
 
+// Base:
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+
+// Generated:
 #include "Gift.generated.h"
+//--------------------------------------------------------------------------------------
+
+
+
+/* ---   Pre-declaration of classes   --- */
+
+// UE:
+class UProjectileMovementComponent;
+
+// Interaction:
+class AArk_VausPawn;
+class ABall;
+//--------------------------------------------------------------------------------------
+
+
 
 UCLASS()
 class ARKANOID_API AGift : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
+
+	/* ---   Constructors   --- */
+
 	// Sets default values for this actor's properties
 	AGift();
+	//-------------------------------------------
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
+	/* ---   Components   --- */
+
+	/** Меш визуализации Подарка */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* GiftMesh = nullptr;
+
+	/** Компонент передвижения Подарка */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UProjectileMovementComponent* ProjectileMovement;
+	//-------------------------------------------
+
+
+
+public:
+
+	/* ---   Velocity   --- */
+
+	// Начальная (стартовая) скорость
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Velocity")
+	float StartingVelocity = 100.f;
+	//--------------------------------------------------------------------------------------
+
+
+
+	/* ---   Collision   --- */
+
+	/**	Событие, когда этот субъект перекрывается с другим */
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+	//--------------------------------------------------------------------------------------
+
+
+
+	/* ---   Reactions   --- */
+
+	/**	Реакция на подбор Пешкой */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Reactions", meta = (DisplayName = "Is Taken"))
+	void EventIsTaken(AArk_VausPawn* VausPawn);
+
+	/** Получить указатели на мячи
+	@warning	Есть риск получить НЕ ВАЛИДНУЮ ссылку. Проверяйте перед использованием
+	*/
+	UFUNCTION(BlueprintCallable, Category = "Reactions")
+	TArray<ABall*> GetAllBalls();
+	//--------------------------------------------------------------------------------------
 };

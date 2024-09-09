@@ -12,6 +12,29 @@
 
 
 
+/* ---   Pre-declaration of classes   --- */
+
+// Interaction:
+class AGift;
+//--------------------------------------------------------------------------------------
+
+
+
+// Структура типа и шанса появления AGift
+USTRUCT(BlueprintType)
+struct FGiftType
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AGift> GiftType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float AppearanceChance;
+};
+
+
+
 UCLASS()
 class ARKANOID_API ABlock : public AActor
 {
@@ -51,7 +74,7 @@ public:
 	/* ---   Destroyed   --- */
 
 	// Массив материалов для каждого Уровня жизни блока
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Block", NoClear)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Block")
 	TArray<UMaterial*> LivesMaterials;
 
 	//
@@ -61,6 +84,24 @@ public:
 	@note	Запускает уничтожение Блока при Количестве оставшихся жизней меньше 0
 	*/
 	void ReductionLives();
+	//-------------------------------------------
+
+
+
+	/* ---   Gift   --- */
+
+	// Общий шанс появления Подарка
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gift")
+	float GiftChance = 0.1;
+
+	// Массив создаваемых бонусов и антибонусов
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gift")
+	TArray<FGiftType> Gifts;
+
+	//
+
+	/** Создаёт подарок (бонус/антибонус) */
+	void SpawnGift();
 	//-------------------------------------------
 
 
@@ -76,8 +117,5 @@ private:
 
 	/** Вызывается, когда этот субъект явно уничтожается во время игрового процесса или в редакторе, но не вызывается во время потоковой передачи уровней или завершения игрового процесса */
 	virtual void Destroyed() override;
-
-	/** Создаёт подарок (бонус/антибонус) */
-	void SpawnGift();
 	//-------------------------------------------
 };

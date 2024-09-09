@@ -40,7 +40,7 @@ void ABlock::BeginPlay()
 {
 	Super::BeginPlay();
 
-	NumLives = GetRandom(0, LivesMaterials.Num() - 1);
+	NumLives = GetRandom(LivesMaterials.Num() - 1);
 
 	ReductionLives();
 }
@@ -55,13 +55,6 @@ void ABlock::Destroyed()
 	SpawnGift();
 
 	Super::Destroyed();
-}
-
-void ABlock::SpawnGift()
-{
-	GetWorld()->SpawnActor<AGift>(GetActorLocation(), FRotator());
-
-	// PS: Требуется добавить шанс появления того или иного бонуса из конкретного списка
 }
 
 void ABlock::ReductionLives()
@@ -83,6 +76,46 @@ void ABlock::ReductionLives()
 	{
 		BlockMesh->SetMaterial(0, LivesMaterials[NumLives]);
 		--NumLives;
+	}
+}
+//--------------------------------------------------------------------------------------
+
+
+
+/* ---   Gift   --- */
+
+void ABlock::SpawnGift()
+{
+	// Регулировка общего шанса появления
+	if (GetRandom(GiftChance) && Gifts.IsValidIndex(0))
+	{
+		// Переменная расчёта шанса появления среди всех типов
+		float lRand = 0;
+
+		// Расчёт максимального значения
+		for (FGiftType Data : Gifts)
+		{
+			lRand += Data.AppearanceChance;
+		}
+
+		// Получение шанса
+		lRand = GetRandomFloat(lRand);
+
+		// Выбор согласно шансу
+		for (FGiftType Data : Gifts)
+		{
+			lRand -= Data.AppearanceChance;
+
+			if (lRand < 0)
+			{
+				GetWorld()->SpawnActor<AGift>(
+					Data.GiftType.Get(), 
+					GetActorLocation(), 
+					FRotator());
+
+				break; // Выход из цикла
+			}
+		}
 	}
 }
 //--------------------------------------------------------------------------------------
