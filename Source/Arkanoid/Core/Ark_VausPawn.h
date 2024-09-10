@@ -64,7 +64,7 @@ protected:
 
 public:
 
-	/* ---   Vaus State   --- */
+	/* ---   Statistics   --- */
 
 	// Тип генерируемого мяча
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters")
@@ -123,5 +123,13 @@ private:
 
 	/** Запуск мяча */
 	void BallLaunch();
+	//-------------------------------------------
+
+
+
+	/* ---   Statistics   --- */
+
+	/** Обновить статус количества мячей */
+	void UpdateBallCountStatistics();
 	//-------------------------------------------
 };

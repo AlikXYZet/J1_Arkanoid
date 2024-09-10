@@ -10,6 +10,7 @@
 
 // Interaction:
 #include "Arkanoid/Elements/Ball.h"
+#include "Ark_GameStateBase.h"
 //--------------------------------------------------------------------------------------
 
 
@@ -50,6 +51,7 @@ AArk_VausPawn::AArk_VausPawn()
 	// Warning: Данный способ дважды ввызывает PossessedBy(*)
 	//-------------------------------------------
 }
+//--------------------------------------------------------------------------------------
 
 
 
@@ -109,6 +111,8 @@ void AArk_VausPawn::BallLaunch()
 		if (lBlock)
 		{
 			--NumBalls;
+
+			UpdateBallCountStatistics();
 		}
 	}
 }
@@ -153,6 +157,8 @@ void AArk_VausPawn::AddBalls(const int32 iAddValue)
 	{
 		NumBalls += iAddValue;
 	}
+
+	UpdateBallCountStatistics();
 }
 
 void AArk_VausPawn::AddWidth(const float iAddValue)
@@ -171,6 +177,19 @@ void AArk_VausPawn::AddWidth(const float iAddValue)
 		}
 
 		VausMesh->SetRelativeScale3D(lScale);
+	}
+}
+//--------------------------------------------------------------------------------------
+
+
+
+/* ---   Game State   --- */
+
+void AArk_VausPawn::UpdateBallCountStatistics()
+{
+	if (AArk_GameStateBase* lCurrentArkGameState = Cast<AArk_GameStateBase>(GetWorld()->GetGameState()))
+	{
+		lCurrentArkGameState->SetBufferBallCounter(NumBalls);
 	}
 }
 //--------------------------------------------------------------------------------------

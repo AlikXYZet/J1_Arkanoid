@@ -6,6 +6,7 @@
 // Interaction:
 #include "Arkanoid/Tools/MyRandom.h"
 #include "Gift.h"
+#include "Arkanoid/Core/Ark_GameStateBase.h"
 //--------------------------------------------------------------------------------------
 
 
@@ -53,6 +54,7 @@ void ABlock::BeginPlay()
 void ABlock::Destroyed()
 {
 	SpawnGift();
+	UpdateScoreStatistics();
 
 	Super::Destroyed();
 }
@@ -122,6 +124,19 @@ void ABlock::SpawnGift()
 				}
 			}
 		}
+	}
+}
+//--------------------------------------------------------------------------------------
+
+
+
+/* ---   Statistics   --- */
+
+void ABlock::UpdateScoreStatistics()
+{
+	if (AArk_GameStateBase* lCurrentArkGameState = Cast<AArk_GameStateBase>(GetWorld()->GetGameState()))
+	{
+		lCurrentArkGameState->AddScore(ScoreNumber);
 	}
 }
 //--------------------------------------------------------------------------------------
