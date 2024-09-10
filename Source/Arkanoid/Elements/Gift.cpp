@@ -30,7 +30,7 @@ AGift::AGift()
 	// Корневой компонент
 	GiftMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ball Mesh"));
 	RootComponent = GiftMesh;
-	GiftMesh->SetRelativeScale3D(FVector(0.1f));
+	GiftMesh->SetRelativeScale3D(FVector(0.2f));
 	GiftMesh->SetCastShadow(false);
 	GiftMesh->SetCollisionProfileName(TEXT("Trigger"));
 

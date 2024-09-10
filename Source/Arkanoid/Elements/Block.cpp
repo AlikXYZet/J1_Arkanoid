@@ -110,8 +110,8 @@ void ABlock::SpawnGift()
 			if (Data.AppearanceChance > 0)
 			{
 				lRand -= Data.AppearanceChance;
-
-				if (lRand < 0)
+				
+				if (lRand <= 0)
 				{
 					GetWorld()->SpawnActor<AGift>(
 						Data.GiftType.Get(),

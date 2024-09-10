@@ -74,7 +74,7 @@ public:
 	/* ---   Destroyed   --- */
 
 	// Массив материалов для каждого Уровня жизни блока
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Block")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters")
 	TArray<UMaterial*> LivesMaterials;
 
 	//
@@ -91,11 +91,11 @@ public:
 	/* ---   Gift   --- */
 
 	// Общий шанс появления Подарка
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gift")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters", meta = (ClampMin = "0", UIMin = "0"))
 	float GiftChance = 0.1;
 
 	// Массив создаваемых бонусов и антибонусов
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gift")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters")
 	TArray<FGiftType> Gifts;
 
 	//

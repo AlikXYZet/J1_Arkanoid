@@ -67,11 +67,20 @@ public:
 	/* ---   Vaus State   --- */
 
 	// Тип генерируемого мяча
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ball Parameters")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters")
 	TSubclassOf<ABall> BallType;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ball Parameters")
+	// Начальное количество мячей
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters", meta = (ClampMin = "1", UIMin = "1"))
 	int32 NumBalls = 3;
+
+	// Минимальное значение Коэффициента перемещения
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters", meta = (ClampMin = "0.5", UIMin = "0.5"))
+	float MinMoveCoeff = 1.f;
+
+	// Минимальная ширина
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters", meta = (ClampMin = "0.1", UIMin = "0.1"))
+	float MinWidth = 0.5f;
 	//-------------------------------------------
 
 
@@ -80,15 +89,19 @@ public:
 
 	/** Установка нового значения Коэффициента перемещения */
 	UFUNCTION(BlueprintCallable, Category = "Gift")
-	void SetMoveCoeff(const float NewValue = 2.f);
+	void SetMoveCoeff(float NewValue = 2.f);
 
 	/** Добавление Коэффициента перемещения */
 	UFUNCTION(BlueprintCallable, Category = "Gift")
-	void AddMoveCoeff(const float AddValue = 0.1f);
+	void AddMoveCoeff(const float AddValue = 0.2f);
 
 	/** Добавить какое-то количество Мячей в копилку */
 	UFUNCTION(BlueprintCallable, Category = "Gift")
 	void AddBalls(const int32 AddValue = 1);
+
+	/** Добавление Коэффициента перемещения */
+	UFUNCTION(BlueprintCallable, Category = "Gift")
+	void AddWidth(const float AddValue = 0.1f);
 	//-------------------------------------------
 
 

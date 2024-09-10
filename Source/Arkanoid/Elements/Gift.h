@@ -57,7 +57,7 @@ public:
 	/* ---   Velocity   --- */
 
 	// Начальная (стартовая) скорость
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Velocity")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters")
 	float StartingVelocity = 100.f;
 	//--------------------------------------------------------------------------------------
 

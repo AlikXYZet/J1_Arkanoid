@@ -118,18 +118,59 @@ void AArk_VausPawn::BallLaunch()
 
 /* ---   Gift   --- */
 
-void AArk_VausPawn::SetMoveCoeff(const float iNewValue)
+void AArk_VausPawn::SetMoveCoeff(float iNewValue)
 {
+	if (iNewValue < MinMoveCoeff)
+	{
+		iNewValue = MinMoveCoeff;
+	}
+
 	MoveCoeff = iNewValue;
 }
 
 void AArk_VausPawn::AddMoveCoeff(const float iAddValue)
 {
-	MoveCoeff *= 1.f + iAddValue;
+	if (MoveCoeff != MinMoveCoeff || iAddValue > 0)
+	{
+		if (MoveCoeff + iAddValue < MinMoveCoeff)
+		{
+			MoveCoeff = MinMoveCoeff;
+		}
+		else
+		{
+			MoveCoeff += iAddValue;
+		}
+	}
 }
 
 void AArk_VausPawn::AddBalls(const int32 iAddValue)
 {
-	NumBalls += iAddValue;
+	if (NumBalls + iAddValue <= 0)
+	{
+		NumBalls = 0;
+	}
+	else
+	{
+		NumBalls += iAddValue;
+	}
+}
+
+void AArk_VausPawn::AddWidth(const float iAddValue)
+{
+	FVector lScale = VausMesh->GetRelativeScale3D();
+
+	if (lScale.Y != MinWidth || iAddValue > 0)
+	{
+		if (lScale.Y + iAddValue < MinWidth)
+		{
+			lScale.Y = MinWidth;
+		}
+		else
+		{
+			lScale.Y += iAddValue;
+		}
+
+		VausMesh->SetRelativeScale3D(lScale);
+	}
 }
 //--------------------------------------------------------------------------------------

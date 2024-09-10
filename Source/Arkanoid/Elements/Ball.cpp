@@ -107,7 +107,7 @@ void ABall::AddVelocity(float iAddValue)
 
 	ProjectileMovement->Velocity.ToDirectionAndLength(lDirection, lLenght);
 
-	if (lLenght != MinVelocity && iAddValue)
+	if (lLenght != MinVelocity || iAddValue > 0)
 	{
 		lLenght += iAddValue;
 
