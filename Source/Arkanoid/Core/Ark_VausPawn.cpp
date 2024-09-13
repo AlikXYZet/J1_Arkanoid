@@ -200,7 +200,7 @@ void AArk_VausPawn::AddWidth(const float iAddValue)
 
 void AArk_VausPawn::Init()
 {
-	CurrentArkGameState = Cast<AArk_GameStateBase>(GetWorld()->GetGameState());
+	CurrentArkGameState = GetWorld()->GetGameState<AArk_GameStateBase>();
 
 	if (CurrentArkGameState)
 	{

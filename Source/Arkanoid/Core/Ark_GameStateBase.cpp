@@ -22,21 +22,7 @@ void AArk_GameStateBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CurrentSavingInstance = Cast<USavingInstance>(
-		UGameplayStatics::GetGameInstance(GetWorld()));
-
-	FString lData = FString::FromInt(RecordScore);
-
-	if (CurrentSavingInstance)
-	{
-		RecordScore = LoadGameData().RecordScore;
-
-		lData = FString::FromInt(RecordScore);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("AArk_GameStateBase::BeginPlay: CurrentSavingInstance is NOT"));
-	}
+	Init();
 }
 //--------------------------------------------------------------------------------------
 
@@ -53,14 +39,14 @@ void AArk_GameStateBase::SetBufferBallCounter(const int32& Count)
 {
 	BufferBallCounter = Count;
 
-	EventBufferBallCounter(Count);
+	OnBufferBallCounter.Broadcast(Count);
 }
 
 void AArk_GameStateBase::AddScore(const int32& iAddScore)
 {
 	CurrentScore += iAddScore;
 
-	EventScoreCounter(CurrentScore);
+	OnScoreCounter.Broadcast(CurrentScore);
 }
 
 void AArk_GameStateBase::CheckAllBallsCounter()
@@ -85,6 +71,11 @@ void AArk_GameStateBase::CheckAllBallsCounter()
 	}
 }
 
+int32& AArk_GameStateBase::GetCurrentScore()
+{
+	return CurrentScore;
+}
+
 int32& AArk_GameStateBase::GetRecordScore()
 {
 	return RecordScore;
@@ -92,7 +83,7 @@ int32& AArk_GameStateBase::GetRecordScore()
 
 void AArk_GameStateBase::GameOver()
 {
-	SaveCurrentGameData();
+	OnGameOver.Broadcast(SaveCurrentGameData());
 }
 //--------------------------------------------------------------------------------------
 
@@ -100,8 +91,24 @@ void AArk_GameStateBase::GameOver()
 
 /* ---   Saving   --- */
 
-void AArk_GameStateBase::SaveCurrentGameData()
+void AArk_GameStateBase::Init()
 {
+	CurrentSavingInstance = GetWorld()->GetGameInstance<USavingInstance>();
+
+	if (CurrentSavingInstance)
+	{
+		RecordScore = LoadGameData().RecordScore;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("AArk_GameStateBase::Init: CurrentSavingInstance is NOT"));
+	}
+}
+
+bool AArk_GameStateBase::SaveCurrentGameData()
+{
+	bool blResult = false;
+
 	if (CurrentSavingInstance)
 	{
 		FGameData lData;
@@ -114,11 +121,14 @@ void AArk_GameStateBase::SaveCurrentGameData()
 		else
 		{
 			lData.RecordScore = CurrentScore;
+			blResult = true;
 		}
 
 		// Сохранение актуальных данных
 		CurrentSavingInstance->SaveGameData(lData);
 	}
+
+	return blResult;
 }
 
 FGameData AArk_GameStateBase::LoadGameData()
@@ -135,6 +145,8 @@ void AArk_GameStateBase::ClearGameData()
 {
 	if (CurrentSavingInstance)
 	{
+		RecordScore = 0;
+
 		CurrentSavingInstance->SaveGameData(FGameData::Empty);
 	}
 }

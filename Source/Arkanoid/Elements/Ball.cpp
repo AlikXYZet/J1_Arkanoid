@@ -88,14 +88,12 @@ void ABall::NotifyActorBeginOverlap(AActor* OtherActor)
 
 void ABall::Destroyed()
 {
-	Super::Destroyed();
-
-	AArk_GameStateBase* lGameState = Cast<AArk_GameStateBase>(GetWorld()->GetGameState());
-	
-	if (lGameState)
+	if (AArk_GameStateBase* lGameState = GetWorld()->GetGameState<AArk_GameStateBase>())
 	{
 		lGameState->CheckAllBallsCounter();
 	}
+
+	Super::Destroyed();
 }
 //--------------------------------------------------------------------------------------
 

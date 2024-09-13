@@ -15,6 +15,16 @@
 
 
 
+/* ---   Delegates   --- */
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLivesCounter, int32, Lives);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBufferBallCounter, int32, Count);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnScoreCounter, int32, Score);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameOver, bool, bIsGameResult);
+//--------------------------------------------------------------------------------------
+
+
+
 /* ---   Pre-declaration of classes   --- */
 
 // Interaction:
@@ -32,6 +42,27 @@ class ARKANOID_API AArk_GameStateBase : public AGameStateBase
 	GENERATED_BODY()
 
 protected:
+
+	/* ---   Delegates   --- */
+
+	/** Делегат изменения Количества жизней */
+	UPROPERTY(BlueprintAssignable, Category = "Statistics")
+	FOnLivesCounter OnLivesCounter;
+
+	/** Делегат изменения Количества мячей в буфере */
+	UPROPERTY(BlueprintAssignable, Category = "Statistics")
+	FOnBufferBallCounter OnBufferBallCounter;
+
+	/** Делегат изменения Количества очков */
+	UPROPERTY(BlueprintAssignable, Category = "Statistics")
+	FOnScoreCounter OnScoreCounter;
+
+	/** Делегат Окончания игры */
+	UPROPERTY(BlueprintAssignable, Category = "Statistics")
+	FOnGameOver OnGameOver;
+	//-------------------------------------------
+
+
 
 	/* ---   Base   --- */
 
@@ -57,25 +88,17 @@ public:
 	/**	Изменить количество Мячей */
 	void SetBufferBallCounter(const int32& Count);
 
-	/**	Event изменения количества Мячей */
-	UFUNCTION(BlueprintImplementableEvent, Category = "Statistics", meta = (DisplayName = "BufferBallCounter"))
-	void EventBufferBallCounter(const int32& Count);
-
 	/**	Добавить количество Очков */
 	void AddScore(const int32& iAddScore);
-
-	/**	Event изменения количества Очков */
-	UFUNCTION(BlueprintImplementableEvent, Category = "Statistics", meta = (DisplayName = "ScoreCounter"))
-	void EventScoreCounter(const int32& Score);
 
 	/**	Проверить количество всех мячей (на поле и в буфере) */
 	void CheckAllBallsCounter();
 
-	/**	Event изменения количества Жизней */
-	UFUNCTION(BlueprintImplementableEvent, Category = "Statistics", meta = (DisplayName = "LivesCounter"))
-	void EventLivesCounter(const int32& Lives);
+	/**	Получить текущее количество Очков */
+	UFUNCTION(BlueprintCallable, Category = "Statistics")
+	int32& GetCurrentScore();
 
-	/**	Получить значение рекордного количества Очков */
+	/**	Получить рекордное количество Очков */
 	UFUNCTION(BlueprintCallable, Category = "Statistics")
 	int32& GetRecordScore();
 	//-------------------------------------------
@@ -86,7 +109,7 @@ public:
 
 	/**	Сохранение текущих данных игры */
 	UFUNCTION(BlueprintCallable, Category = "Saving")
-	void SaveCurrentGameData();
+	bool SaveCurrentGameData();
 
 	/**	Получение данных игры */
 	UFUNCTION(BlueprintCallable, Category = "Saving")
@@ -116,7 +139,7 @@ private:
 	int32 RecordScore = 0;
 
 	//
-	
+
 	/** Метод, хранящий действия при Окончании игры */
 	void GameOver();
 
@@ -128,5 +151,8 @@ private:
 
 	// Указатель на текущий SavingInstance
 	USavingInstance* CurrentSavingInstance;
+
+	/** Инициализация данных GameState */
+	void Init();
 	//-------------------------------------------
 };

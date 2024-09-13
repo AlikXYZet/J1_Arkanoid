@@ -134,7 +134,7 @@ void ABlock::SpawnGift()
 
 void ABlock::UpdateScoreStatistics()
 {
-	if (AArk_GameStateBase* lCurrentArkGameState = Cast<AArk_GameStateBase>(GetWorld()->GetGameState()))
+	if (AArk_GameStateBase* lCurrentArkGameState = GetWorld()->GetGameState<AArk_GameStateBase>())
 	{
 		lCurrentArkGameState->AddScore(ScoreNumber);
 	}
