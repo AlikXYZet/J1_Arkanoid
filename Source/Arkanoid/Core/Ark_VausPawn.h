@@ -20,6 +20,7 @@ class USphereComponent;
 
 // Interaction:
 class ABall;
+class AArk_GameStateBase;
 //--------------------------------------------------------------------------------------
 
 
@@ -53,6 +54,14 @@ public:
 
 
 protected:
+
+	/* ---   Base   --- */
+
+	/** Переопределяемое собственное событие, определяющее начало игры для этого актера */
+	void virtual BeginPlay() override;
+	//-------------------------------------------
+
+
 
 	/* ---   Input   --- */
 
@@ -128,6 +137,14 @@ private:
 
 
 	/* ---   Statistics   --- */
+
+	// Указатель на текущий GameStateBase
+	AArk_GameStateBase* CurrentArkGameState = nullptr;
+
+	//
+
+	/** Инициализация данных Пешки и передача собственного указателя другим объектам */
+	void Init();
 
 	/** Обновить статус количества мячей */
 	void UpdateBallCountStatistics();

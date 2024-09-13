@@ -9,6 +9,7 @@
 
 // Interaction:
 #include "Block.h"
+#include "Arkanoid/Core/Ark_GameStateBase.h"
 //--------------------------------------------------------------------------------------
 
 
@@ -82,6 +83,18 @@ void ABall::NotifyActorBeginOverlap(AActor* OtherActor)
 	if (Cast<AKillZVolume>(OtherActor))
 	{
 		Destroy();
+	}
+}
+
+void ABall::Destroyed()
+{
+	Super::Destroyed();
+
+	AArk_GameStateBase* lGameState = Cast<AArk_GameStateBase>(GetWorld()->GetGameState());
+	
+	if (lGameState)
+	{
+		lGameState->CheckAllBallsCounter();
 	}
 }
 //--------------------------------------------------------------------------------------

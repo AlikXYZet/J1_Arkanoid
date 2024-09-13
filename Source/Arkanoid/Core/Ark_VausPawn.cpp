@@ -11,6 +11,7 @@
 // Interaction:
 #include "Arkanoid/Elements/Ball.h"
 #include "Ark_GameStateBase.h"
+#include "Ark_PlayerController.h"
 //--------------------------------------------------------------------------------------
 
 
@@ -50,6 +51,18 @@ AArk_VausPawn::AArk_VausPawn()
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 	// Warning: Данный способ дважды ввызывает PossessedBy(*)
 	//-------------------------------------------
+}
+//--------------------------------------------------------------------------------------
+
+
+
+/* ---   Base   --- */
+
+void AArk_VausPawn::BeginPlay()
+{
+	Super::BeginPlay();
+
+	Init();
 }
 //--------------------------------------------------------------------------------------
 
@@ -183,13 +196,27 @@ void AArk_VausPawn::AddWidth(const float iAddValue)
 
 
 
-/* ---   Game State   --- */
+/* ---   Statistics   --- */
+
+void AArk_VausPawn::Init()
+{
+	CurrentArkGameState = Cast<AArk_GameStateBase>(GetWorld()->GetGameState());
+
+	if (CurrentArkGameState)
+	{
+		CurrentArkGameState->SetVausPawn(this);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("AArk_VausPawn::Init: CurrentArkGameState is NOT"));
+	}
+}
 
 void AArk_VausPawn::UpdateBallCountStatistics()
 {
-	if (AArk_GameStateBase* lCurrentArkGameState = Cast<AArk_GameStateBase>(GetWorld()->GetGameState()))
+	if (CurrentArkGameState)
 	{
-		lCurrentArkGameState->SetBufferBallCounter(NumBalls);
+		CurrentArkGameState->SetBufferBallCounter(NumBalls);
 	}
 }
 //--------------------------------------------------------------------------------------
