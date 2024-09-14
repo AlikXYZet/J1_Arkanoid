@@ -50,22 +50,24 @@ void ABlocksGenerator::StartGenerator()
 	// Выбор критерия 
 	switch (GenerationType)
 	{
-	case EGenerationType::Tight:
-		//TightGenerationType();
+	case EGenerationType::Tight: // Плотная компоновка
 		lLambda = [](const int32&, const int32&)
 			{ return true; };
 		break;
 
-	case EGenerationType::XType:
-		//XGenerationType();
+	case EGenerationType::XType: // X-компоновка
 		lLambda = [&](const int32& x, const int32& y)
 			{ return x == y || x == NumberAlongAxes.Y - 1 - y; };
 		break;
 
-	case EGenerationType::Chess:
-		//ChessGenerationType();
+	case EGenerationType::Chess: // В шахматном порядке
 		lLambda = [](const int32& x, const int32& y)
 			{ return bool((x + y) % 2); };
+		break;
+
+	default: // Один блок в середине (примерно)
+		lLambda = [&](const int32& x, const int32& y)
+			{ return x == NumberAlongAxes.X / 2 && y == NumberAlongAxes.Y / 2; };
 		break;
 	}
 

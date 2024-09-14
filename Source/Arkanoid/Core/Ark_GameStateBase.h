@@ -21,6 +21,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLivesCounter, int32, Lives);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBufferBallCounter, int32, Count);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnScoreCounter, int32, Score);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameOver, bool, bIsGameResult);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLevelWin, bool, bIsGameResult);
 //--------------------------------------------------------------------------------------
 
 
@@ -60,6 +61,10 @@ protected:
 	/** Делегат Окончания игры */
 	UPROPERTY(BlueprintAssignable, Category = "Statistics")
 	FOnGameOver OnGameOver;
+
+	/** Делегат Завершения уровня */
+	UPROPERTY(BlueprintAssignable, Category = "Statistics")
+	FOnLevelWin OnLevelWin;
 	//-------------------------------------------
 
 

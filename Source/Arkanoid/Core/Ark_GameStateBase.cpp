@@ -12,6 +12,7 @@
 #include "Arkanoid/Tools/Saving/SavingInstance.h"
 #include "Arkanoid/Tools/Saving/SavedGameData.h"
 #include "Arkanoid/Elements/Ball.h"
+#include "Arkanoid/Elements/Block.h"
 //--------------------------------------------------------------------------------------
 
 
@@ -47,6 +48,18 @@ void AArk_GameStateBase::AddScore(const int32& iAddScore)
 	CurrentScore += iAddScore;
 
 	OnScoreCounter.Broadcast(CurrentScore);
+
+	TArray<AActor*> lBlocks;
+
+	UGameplayStatics::GetAllActorsOfClass(
+		GetWorld(),
+		ABlock::StaticClass(),
+		lBlocks);
+
+	if (lBlocks.Num() <= 1)
+	{
+		OnLevelWin.Broadcast(SaveCurrentGameData());
+	}
 }
 
 void AArk_GameStateBase::CheckAllBallsCounter()
@@ -136,7 +149,7 @@ bool AArk_GameStateBase::SaveCurrentGameData()
 		FGameData lData;
 
 		// Проверка нового рекорда
-		if (RecordScore > CurrentScore)
+		if (RecordScore >= CurrentScore)
 		{
 			lData.RecordScore = RecordScore;
 		}

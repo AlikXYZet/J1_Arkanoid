@@ -32,7 +32,7 @@ enum struct EGenerationType : uint8
 	NONE = 0,
 	// Плотная компоновка
 	Tight,
-	// X компоновка
+	// X-компоновка
 	XType,
 	// В шахматном порядке
 	Chess,
