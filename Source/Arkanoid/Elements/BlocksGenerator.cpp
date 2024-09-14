@@ -50,19 +50,29 @@ void ABlocksGenerator::StartGenerator()
 	// Выбор критерия 
 	switch (GenerationType)
 	{
-	case EGenerationType::Tight: // Плотная компоновка
-		lLambda = [](const int32&, const int32&)
-			{ return true; };
-		break;
-
 	case EGenerationType::XType: // X-компоновка
 		lLambda = [&](const int32& x, const int32& y)
 			{ return x == y || x == NumberAlongAxes.Y - 1 - y; };
 		break;
 
+	case EGenerationType::Column: // Компоновка колоннами через 1
+		lLambda = [](const int32&, const int32& y)
+			{ return bool(y % 2); };
+		break;
+
+	case EGenerationType::Row: // Компоновка рядами через 1
+		lLambda = [](const int32& x, const int32&)
+			{ return bool(x % 2); };
+		break;
+
 	case EGenerationType::Chess: // В шахматном порядке
 		lLambda = [](const int32& x, const int32& y)
 			{ return bool((x + y) % 2); };
+		break;
+
+	case EGenerationType::Tight: // Плотная компоновка (полное заполнение)
+		lLambda = [](const int32&, const int32&)
+			{ return true; };
 		break;
 
 	default: // Один блок в середине (примерно)

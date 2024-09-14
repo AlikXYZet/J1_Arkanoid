@@ -47,23 +47,23 @@ protected:
 	/* ---   Delegates   --- */
 
 	/** Делегат изменения Количества жизней */
-	UPROPERTY(BlueprintAssignable, Category = "Statistics")
+	UPROPERTY(BlueprintAssignable, Category = "Statistics|Delegates")
 	FOnLivesCounter OnLivesCounter;
 
 	/** Делегат изменения Количества мячей в буфере */
-	UPROPERTY(BlueprintAssignable, Category = "Statistics")
+	UPROPERTY(BlueprintAssignable, Category = "Statistics|Delegates")
 	FOnBufferBallCounter OnBufferBallCounter;
 
 	/** Делегат изменения Количества очков */
-	UPROPERTY(BlueprintAssignable, Category = "Statistics")
+	UPROPERTY(BlueprintAssignable, Category = "Statistics|Delegates")
 	FOnScoreCounter OnScoreCounter;
 
 	/** Делегат Окончания игры */
-	UPROPERTY(BlueprintAssignable, Category = "Statistics")
+	UPROPERTY(BlueprintAssignable, Category = "Statistics|Delegates")
 	FOnGameOver OnGameOver;
 
 	/** Делегат Завершения уровня */
-	UPROPERTY(BlueprintAssignable, Category = "Statistics")
+	UPROPERTY(BlueprintAssignable, Category = "Statistics|Delegates")
 	FOnLevelWin OnLevelWin;
 	//-------------------------------------------
 
@@ -127,6 +127,26 @@ public:
 	/**	Сохранение данных игры */
 	UFUNCTION(BlueprintCallable, Category = "Saving")
 	void ClearGameData();
+	//-------------------------------------------
+
+
+
+	/* ---   Levels Control   --- */
+
+	// Список запускаемых уровней
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters")
+	TArray<TSoftObjectPtr<UWorld>> LevelsInOrder;
+
+	// Номер текущего уровня
+	int32 CurrentLevelNumber = 0;
+
+	//
+
+	/**	Переход на следующий уровень
+	@note	Циклично по списку уровней "LevelsInOrder"
+	*/
+	UFUNCTION(BlueprintCallable, Category = "LevelsControl")
+	void ToNextLevel();
 	//-------------------------------------------
 
 

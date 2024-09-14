@@ -186,3 +186,25 @@ void AArk_GameStateBase::ClearGameData()
 	}
 }
 //--------------------------------------------------------------------------------------
+
+
+
+/* ---   Levels Control   --- */
+
+void AArk_GameStateBase::ToNextLevel()
+{
+	if (LevelsInOrder.IsValidIndex(0))
+	{
+		do
+		{
+			++CurrentLevelNumber;
+		} while (!LevelsInOrder.IsValidIndex(CurrentLevelNumber));
+
+		UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), LevelsInOrder[0]);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("AArk_GameStateBase::ToNextLevel: LevelsInOrder[0] is NOT Valid"));
+	}
+}
+//--------------------------------------------------------------------------------------
