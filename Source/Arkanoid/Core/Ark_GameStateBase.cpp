@@ -62,7 +62,17 @@ void AArk_GameStateBase::CheckAllBallsCounter()
 
 		if (lBalls.Num() <= 1)
 		{
-			GameOver();
+			DecLives();
+
+			if (CurrentLives < 0)
+			{
+				GameOver();
+			}
+			else
+			{
+				CurrentVausPawn->ResetDefaultTransform();
+				CurrentVausPawn->AddBalls(1);
+			}
 		}
 	}
 	else if (!CurrentVausPawn)
@@ -81,9 +91,21 @@ int32& AArk_GameStateBase::GetRecordScore()
 	return RecordScore;
 }
 
+int32& AArk_GameStateBase::GetNumBufferBalls()
+{
+	return BufferBallCounter;
+}
+
 void AArk_GameStateBase::GameOver()
 {
 	OnGameOver.Broadcast(SaveCurrentGameData());
+}
+
+void AArk_GameStateBase::DecLives()
+{
+	--CurrentLives;
+
+	OnLivesCounter.Broadcast(CurrentLives);
 }
 //--------------------------------------------------------------------------------------
 

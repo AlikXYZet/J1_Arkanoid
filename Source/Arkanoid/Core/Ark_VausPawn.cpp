@@ -33,9 +33,9 @@ AArk_VausPawn::AArk_VausPawn()
 
 	VausMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Vaus Mesh"));
 	VausMesh->SetupAttachment(RootComponent);
-	VausMesh->SetRelativeLocation(FVector(-460.f, 0.f, 45.f));
-	VausMesh->SetRelativeScale3D(FVector(0.1f, 1.f, 0.4f));
 	VausMesh->SetCastShadow(false);
+
+	ResetDefaultTransform();
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(RootComponent);
@@ -198,6 +198,12 @@ void AArk_VausPawn::AddWidth(const float iAddValue)
 
 /* ---   Statistics   --- */
 
+void AArk_VausPawn::ResetDefaultTransform()
+{
+	VausMesh->SetRelativeLocation(FVector(-460.f, 0.f, 45.f));
+	VausMesh->SetRelativeScale3D(FVector(0.1f, 1.f, 0.4f));
+}
+
 void AArk_VausPawn::Init()
 {
 	CurrentArkGameState = GetWorld()->GetGameState<AArk_GameStateBase>();
@@ -205,6 +211,8 @@ void AArk_VausPawn::Init()
 	if (CurrentArkGameState)
 	{
 		CurrentArkGameState->SetVausPawn(this);
+
+		UpdateBallCountStatistics();
 	}
 	else
 	{

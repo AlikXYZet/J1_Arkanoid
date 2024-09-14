@@ -54,7 +54,7 @@ void ABlock::BeginPlay()
 void ABlock::Destroyed()
 {
 	SpawnGift();
-	UpdateScoreStatistics();
+	AddScores();
 
 	Super::Destroyed();
 }
@@ -132,7 +132,7 @@ void ABlock::SpawnGift()
 
 /* ---   Statistics   --- */
 
-void ABlock::UpdateScoreStatistics()
+void ABlock::AddScores()
 {
 	if (AArk_GameStateBase* lCurrentArkGameState = GetWorld()->GetGameState<AArk_GameStateBase>())
 	{

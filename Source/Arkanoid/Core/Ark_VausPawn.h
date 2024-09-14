@@ -90,6 +90,12 @@ public:
 	// Минимальная ширина
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters", meta = (ClampMin = "0.1", UIMin = "0.1"))
 	float MinWidth = 0.5f;
+
+	//
+
+	/** Сброс трансформации каретки до значений по умолчанию */
+	//UFUNCTION(BlueprintCallable, Category = "Parameters")
+	void ResetDefaultTransform();
 	//-------------------------------------------
 
 
