@@ -7,10 +7,10 @@
 #include "Engine/GameInstance.h"
 
 // Interaction:
-#include "GameData.h"
+#include "Arkanoid/Tools/Saving/GameData.h"
 
 // Generated:
-#include "SavingInstance.generated.h"
+#include "Ark_GameInstance.generated.h"
 //--------------------------------------------------------------------------------------
 
 
@@ -27,7 +27,7 @@ class USavedGameData;
  * 
  */
 UCLASS()
-class ARKANOID_API USavingInstance : public UGameInstance
+class ARKANOID_API UArk_GameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 	

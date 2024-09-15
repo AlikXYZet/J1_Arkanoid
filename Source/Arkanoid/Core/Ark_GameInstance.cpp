@@ -1,17 +1,17 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 // Base:
-#include "SavingInstance.h"
+#include "Ark_GameInstance.h"
 
 // UE:
 #include "Kismet/GameplayStatics.h"
 
 // Interaction:
-#include "SavedGameData.h"
+#include "Arkanoid/Tools/Saving/SavedGameData.h"
 //--------------------------------------------------------------------------------------
 
 
-void USavingInstance::Init()
+void UArk_GameInstance::Init()
 {
 	SaveGame = Cast<USavedGameData>(UGameplayStatics::LoadGameFromSlot(GameDataSlot, 0));
 
@@ -24,7 +24,7 @@ void USavingInstance::Init()
 	}
 }
 
-void USavingInstance::SaveGameData(const FGameData& iGameData) const
+void UArk_GameInstance::SaveGameData(const FGameData& iGameData) const
 {
 	if (SaveGame)
 	{
@@ -34,11 +34,11 @@ void USavingInstance::SaveGameData(const FGameData& iGameData) const
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("USavingInstance::SaveGameData: SaveGame is NOT"));
+		UE_LOG(LogTemp, Error, TEXT("UArk_GameInstance::SaveGameData: SaveGame is NOT"));
 	}
 }
 
-FGameData USavingInstance::LoadGameData() const
+FGameData UArk_GameInstance::LoadGameData() const
 {
 	if (SaveGame)
 	{
@@ -46,7 +46,7 @@ FGameData USavingInstance::LoadGameData() const
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("USavingInstance::SaveGameData: SaveGame is NOT"));
+		UE_LOG(LogTemp, Error, TEXT("UArk_GameInstance::SaveGameData: SaveGame is NOT"));
 	}
 
 	return FGameData::Empty;

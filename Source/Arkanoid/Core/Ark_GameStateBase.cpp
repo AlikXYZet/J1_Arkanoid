@@ -9,7 +9,7 @@
 // Interaction:
 #include "Ark_PlayerController.h"
 #include "Ark_VausPawn.h"
-#include "Arkanoid/Tools/Saving/SavingInstance.h"
+#include "Ark_GameInstance.h"
 #include "Arkanoid/Tools/Saving/SavedGameData.h"
 #include "Arkanoid/Elements/Ball.h"
 #include "Arkanoid/Elements/Block.h"
@@ -128,7 +128,7 @@ void AArk_GameStateBase::DecLives()
 
 void AArk_GameStateBase::Init()
 {
-	CurrentSavingInstance = GetWorld()->GetGameInstance<USavingInstance>();
+	CurrentSavingInstance = GetWorld()->GetGameInstance<UArk_GameInstance>();
 
 	if (CurrentSavingInstance)
 	{

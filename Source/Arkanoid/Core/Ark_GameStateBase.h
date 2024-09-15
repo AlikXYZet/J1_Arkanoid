@@ -31,7 +31,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLevelWin, bool, bIsGameResult);
 // Interaction:
 class AArk_PlayerController;
 class AArk_VausPawn;
-class USavingInstance;
+class UArk_GameInstance;
 class USavedGameData;
 //--------------------------------------------------------------------------------------
 
@@ -181,7 +181,7 @@ private:
 	/* ---   Saving   --- */
 
 	// Указатель на текущий SavingInstance
-	USavingInstance* CurrentSavingInstance;
+	UArk_GameInstance* CurrentSavingInstance;
 
 	/** Инициализация данных GameState */
 	void Init();
