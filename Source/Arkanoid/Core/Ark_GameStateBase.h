@@ -9,6 +9,7 @@
 // Interaction:
 #include "Arkanoid/Tools/Saving/GameData.h"
 #include "Arkanoid/Tools/Saving/LevelData.h"
+#include "Arkanoid/Tools/TableRow/LevelTableRow.h"
 
 // Generated:
 #include "Ark_GameStateBase.generated.h"
@@ -28,6 +29,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLevelWin, bool, bIsGameResult);
 
 
 /* ---   Pre-declaration of classes   --- */
+
+// UE:
+class UDataTable;
 
 // Interaction:
 class AArk_PlayerController;
@@ -104,6 +108,10 @@ public:
 	/**	Проверить количество всех мячей (на поле и в буфере) */
 	void CheckAllBallsCounter();
 
+	/**	Получить количество Жизней */
+	UFUNCTION(BlueprintCallable, Category = "Statistics")
+	int32& GetCurrentLives();
+
 	/**	Получить текущее количество Очков */
 	UFUNCTION(BlueprintCallable, Category = "Statistics")
 	int32& GetCurrentScore();
@@ -130,9 +138,9 @@ public:
 
 	/* ---   Levels Control   --- */
 
-	// Список запускаемых уровней
+	// Список (таблица) запускаемых уровней
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters")
-	TArray<TSoftObjectPtr<UWorld>> LevelsInOrder;
+	UDataTable* LevelTable;
 
 	//
 
@@ -204,6 +212,9 @@ private:
 
 	/* ---   Levels Control   --- */
 
+	// Список запускаемых уровней, полученный из таблицы
+	TArray<FLevelTableRow*> LevelsInOrder;
+
 	// Номер текущего Уровня
 	int32 CurrentLevelNumber = -1;
 
@@ -219,7 +230,7 @@ private:
 
 
 
-	/* ---   Levels Saving   --- */
+	/* ---   Level Saving   --- */
 
 	/** Обновить текущие данные Уровня */
 	void UpdateLevelData();

@@ -5,14 +5,15 @@
 
 // UE:
 #include "Kismet/GameplayStatics.h"
+#include "Engine/DataTable.h"
 
 // Interaction:
 #include "Ark_PlayerController.h"
 #include "Ark_VausPawn.h"
 #include "Ark_GameInstance.h"
-#include "Arkanoid/Tools/Saving/SavedGameData.h"
 #include "Arkanoid/Elements/Ball.h"
 #include "Arkanoid/Elements/Block.h"
+#include "Arkanoid/Tools/Saving/SavedGameData.h"
 //--------------------------------------------------------------------------------------
 
 
@@ -87,6 +88,11 @@ void AArk_GameStateBase::CheckAllBallsCounter()
 	}
 }
 
+int32& AArk_GameStateBase::GetCurrentLives()
+{
+	return CurrentLives;
+}
+
 int32& AArk_GameStateBase::GetCurrentScore()
 {
 	return CurrentScore;
@@ -134,6 +140,8 @@ int32 AArk_GameStateBase::GetNumberBallsOnLevel()
 
 void AArk_GameStateBase::Init()
 {
+	/* ---   Game and Level Saving   --- */
+
 	CurrentSavingInstance = GetWorld()->GetGameInstance<UArk_GameInstance>();
 
 	if (!CurrentSavingInstance)
@@ -144,6 +152,53 @@ void AArk_GameStateBase::Init()
 	UpdateGameData();
 	UpdateLevelData();
 	UpdateLevelNumber();
+	//-------------------------------------------
+
+
+
+	/* ---   Levels Control   --- */
+
+	// Фильтрация таблицы уровней в массив
+	if (LevelTable
+		&& LevelTable->GetRowStruct() == FLevelTableRow::StaticStruct())
+	{
+		LevelsInOrder.Empty();
+
+		TArray<FLevelTableRow*> lFromTable;
+
+		LevelTable->GetAllRows<FLevelTableRow>("Ark_GameStateBase::LevelTable", lFromTable);
+
+		if (int32 lNum = lFromTable.Num())
+		{
+			FLevelTableRow* lRow = nullptr;
+
+			// Фильтрация данных таблицы по валидности карты Уровня:
+			for (int32 i = 0; i < lNum; ++i)
+			{
+				lRow = lFromTable[i];
+
+				if (lRow->Map.GetAssetName().Len())
+				{
+					LevelsInOrder.Add(lFromTable[i]);
+				}
+				else
+				{
+					UE_LOG(LogTemp, Warning,
+						TEXT("AArk_GameStateBase::Init: Map in Row #%d from Table is NOT configured"),
+						i + 1);
+				}
+			}
+		}
+	}
+	else if (!LevelTable)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AArk_GameStateBase::Init: LevelTable is NOT"));
+	}
+	else if (LevelTable->GetRowStruct() != FLevelTableRow::StaticStruct())
+	{
+		UE_LOG(LogTemp, Error, TEXT("AArk_GameStateBase::Init: LevelTable structure is NOT an FLevelTableRow"));
+	}
+	//-------------------------------------------
 }
 //--------------------------------------------------------------------------------------
 
@@ -202,18 +257,14 @@ void AArk_GameStateBase::ToNextLevel()
 {
 	if (LevelsInOrder.IsValidIndex(0))
 	{
-		do
+		if (0 <= CurrentLevelNumber && CurrentLevelNumber < LevelsInOrder.Num())
 		{
-			if (0 <= CurrentLevelNumber && CurrentLevelNumber < LevelsInOrder.Num())
-			{
-				++CurrentLevelNumber;
-			}
-			else
-			{
-				CurrentLevelNumber = 0;
-			}
-
-		} while (!LevelsInOrder.IsValidIndex(CurrentLevelNumber));
+			++CurrentLevelNumber;
+		}
+		else
+		{
+			CurrentLevelNumber = 0;
+		}
 
 		ToSelectedLevel(CurrentLevelNumber);
 	}
@@ -229,7 +280,7 @@ void AArk_GameStateBase::ToSelectedLevel(const int32& iSelect)
 	{
 		SaveLevelNumber(iSelect);
 
-		UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), LevelsInOrder[iSelect]);
+		UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), LevelsInOrder[iSelect]->Map);
 	}
 	else
 	{
@@ -264,13 +315,11 @@ void AArk_GameStateBase::UpdateLevelData()
 	{
 		FLevelData lData = CurrentSavingInstance->LoadLevelData();
 
-		CurrentLives = lData.Lives;
-		CurrentScore = lData.Score;
+		CurrentLives = lData.Lives > 0 ? lData.Lives : CurrentLives;
+		CurrentScore = lData.Score > 0 ? lData.Score : CurrentScore;
+		BufferBallCounter = lData.Balls > 0 ? lData.Balls : BufferBallCounter;
 
-		if (lData.Balls > 0)
-		{
-			BufferBallCounter = lData.Balls;
-		}
+		// PS: Не сохраняем пустые данные
 	}
 }
 
