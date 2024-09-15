@@ -65,21 +65,20 @@ void AArk_GameStateBase::AddScore(const int32& iAddScore)
 
 void AArk_GameStateBase::CheckAllBallsCounter()
 {
-	if (CurrentVausPawn && CurrentVausPawn->NumBalls <= 0)
+	if (CurrentVausPawn
+		&& BufferBallCounter <= 0
+		&& GetNumberBallsOnLevel() <= 1)
 	{
-		if (GetNumberBallsOnLevel() <= 1)
-		{
-			DecLives();
+		DecLives();
 
-			if (CurrentLives < 0)
-			{
-				GameOver();
-			}
-			else
-			{
-				CurrentVausPawn->ResetDefaultTransform();
-				CurrentVausPawn->AddBalls(1);
-			}
+		if (CurrentLives < 0)
+		{
+			GameOver();
+		}
+		else
+		{
+			CurrentVausPawn->ResetDefaultTransform();
+			CurrentVausPawn->AddBalls(1);
 		}
 	}
 	else if (!CurrentVausPawn)
@@ -267,7 +266,11 @@ void AArk_GameStateBase::UpdateLevelData()
 
 		CurrentLives = lData.Lives;
 		CurrentScore = lData.Score;
-		BufferBallCounter = lData.Balls;
+
+		if (lData.Balls > 0)
+		{
+			BufferBallCounter = lData.Balls;
+		}
 	}
 }
 

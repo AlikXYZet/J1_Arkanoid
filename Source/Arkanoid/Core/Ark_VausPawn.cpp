@@ -108,7 +108,9 @@ void AArk_VausPawn::MoveVaus(const float iValue)
 
 void AArk_VausPawn::BallLaunch()
 {
-	if (NumBalls > 0)
+	int32 lNumBalls = CurrentArkGameState->GetNumBufferBalls();
+
+	if (lNumBalls > 0)
 	{
 		// Параметр спавна: Не создавать, если что-то мешает
 		FActorSpawnParameters lSpawnParameters = FActorSpawnParameters();
@@ -123,9 +125,7 @@ void AArk_VausPawn::BallLaunch()
 		// Если мяч создан, то уменьшить счётчик
 		if (lBlock)
 		{
-			--NumBalls;
-
-			UpdateBallCountStatistics();
+			UpdateBallCountStatistics(lNumBalls - 1);
 		}
 	}
 }
@@ -162,16 +162,21 @@ void AArk_VausPawn::AddMoveCoeff(const float iAddValue)
 
 void AArk_VausPawn::AddBalls(const int32 iAddValue)
 {
-	if (NumBalls + iAddValue <= 0)
+	if (CurrentArkGameState)
 	{
-		NumBalls = 0;
-	}
-	else
-	{
-		NumBalls += iAddValue;
-	}
+		int32 lNumBalls = CurrentArkGameState->GetNumBufferBalls();
 
-	UpdateBallCountStatistics();
+		if (lNumBalls + iAddValue <= 0)
+		{
+			lNumBalls = 0;
+		}
+		else
+		{
+			lNumBalls += iAddValue;
+		}
+
+		UpdateBallCountStatistics(lNumBalls);
+	}
 }
 
 void AArk_VausPawn::AddWidth(const float iAddValue)
@@ -216,15 +221,13 @@ void AArk_VausPawn::Init()
 	{
 		UE_LOG(LogTemp, Error, TEXT("AArk_VausPawn::Init: CurrentArkGameState is NOT"));
 	}
-
-	UpdateBallCountStatistics();
 }
 
-void AArk_VausPawn::UpdateBallCountStatistics()
+void AArk_VausPawn::UpdateBallCountStatistics(const int32& iNumber)
 {
 	if (CurrentArkGameState)
 	{
-		CurrentArkGameState->SetBufferBallCounter(NumBalls);
+		CurrentArkGameState->SetBufferBallCounter(iNumber);
 	}
 }
 //--------------------------------------------------------------------------------------

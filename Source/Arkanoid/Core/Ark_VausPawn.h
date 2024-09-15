@@ -79,10 +79,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters")
 	TSubclassOf<ABall> BallType;
 
-	// Начальное количество мячей
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters", meta = (ClampMin = "1", UIMin = "1"))
-	int32 NumBalls = 3;
-
 	// Минимальное значение Коэффициента перемещения
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters", meta = (ClampMin = "0.5", UIMin = "0.5"))
 	float MinMoveCoeff = 1.f;
@@ -110,7 +106,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Gift")
 	void AddMoveCoeff(const float AddValue = 0.2f);
 
-	/** Добавить какое-то количество Мячей в копилку */
+	/** Добавить какое-то количество Мячей в Буфер */
 	UFUNCTION(BlueprintCallable, Category = "Gift")
 	void AddBalls(const int32 AddValue = 1);
 
@@ -153,6 +149,6 @@ private:
 	void Init();
 
 	/** Обновить статус количества мячей */
-	void UpdateBallCountStatistics();
+	void UpdateBallCountStatistics(const int32& iNumber);
 	//-------------------------------------------
 };

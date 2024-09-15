@@ -86,6 +86,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters")
 	int32 CurrentLives = 3;
 
+	// Количество Мячей в буфере (Обновляется Пешкой)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters", meta = (ClampMin = "1", UIMin = "1"))
+	int32 BufferBallCounter = 3;
+
 	//
 
 	/**	Сохранить указатель на Каретку */
@@ -153,9 +157,6 @@ private:
 
 	// Указатель на текущую Каректу для проверки количества мячей в буффере
 	AArk_VausPawn* CurrentVausPawn;
-
-	// Количество Мячей в буфере (Обновляется Пешкой)
-	int32 BufferBallCounter = 3;
 
 	// Количество очков за игру
 	int32 CurrentScore = 0;
