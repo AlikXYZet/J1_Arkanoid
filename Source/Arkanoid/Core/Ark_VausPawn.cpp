@@ -211,13 +211,13 @@ void AArk_VausPawn::Init()
 	if (CurrentArkGameState)
 	{
 		CurrentArkGameState->SetVausPawn(this);
-
-		UpdateBallCountStatistics();
 	}
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("AArk_VausPawn::Init: CurrentArkGameState is NOT"));
 	}
+
+	UpdateBallCountStatistics();
 }
 
 void AArk_VausPawn::UpdateBallCountStatistics()

@@ -5,26 +5,32 @@
 #include "Math/UnrealMath.h"
 
 // Generated:
-#include "GameData.generated.h"
+#include "LevelData.generated.h"
 //--------------------------------------------------------------------------------------
 
 
 
 // Структура данных игры
 USTRUCT(BlueprintType)
-struct FGameData
+struct FLevelData
 {
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 RecordScore = 0;
+	int32 Lives = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Score = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Balls = 0;
 
 
 
 	/* ---   Static   --- */
 
-	// Пустой: Все значения структуры = 0
-	static const FGameData Empty;
+	// Пустой: Все значения структуры равны базовымм значениям
+	static const FLevelData Empty;
 	//-------------------------------------------
 };
 //--------------------------------------------------------------------------------------
@@ -34,5 +40,5 @@ struct FGameData
 /* ---   Переопределение для статических значений структуры   --- */
 
 // Пустой: Все значения структуры = 0
-__declspec(selectany) const FGameData FGameData::Empty { 0 };
+__declspec(selectany) const FLevelData FLevelData::Empty { 0, 0, 0 };
 //--------------------------------------------------------------------------------------

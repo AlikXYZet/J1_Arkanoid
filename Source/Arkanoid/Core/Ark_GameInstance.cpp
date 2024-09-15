@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 // Base:
 #include "Ark_GameInstance.h"
@@ -11,8 +11,13 @@
 //--------------------------------------------------------------------------------------
 
 
+
+/* ---   Game Saving   --- */
+
 void UArk_GameInstance::Init()
 {
+	Super::Init();
+
 	SaveGame = Cast<USavedGameData>(UGameplayStatics::LoadGameFromSlot(GameDataSlot, 0));
 
 	if (!SaveGame)
@@ -51,3 +56,34 @@ FGameData UArk_GameInstance::LoadGameData() const
 
 	return FGameData::Empty;
 }
+//--------------------------------------------------------------------------------------
+
+
+
+/* ---   Levels Control   --- */
+
+void UArk_GameInstance::SaveLevelNumber(const int32& iNumber)
+{
+	LevelNumber = iNumber;
+}
+
+int32 UArk_GameInstance::LoadLevelNumber()
+{
+	return LevelNumber;
+}
+//-------------------------------------------
+
+
+
+/* ---   Level Saving   --- */
+
+void UArk_GameInstance::SaveLevelData(const FLevelData& iLevelData)
+{
+	LevelData = iLevelData;
+}
+
+FLevelData UArk_GameInstance::LoadLevelData() const
+{
+	return LevelData;
+}
+//--------------------------------------------------------------------------------------

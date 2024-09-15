@@ -58,7 +58,8 @@ void AArk_GameStateBase::AddScore(const int32& iAddScore)
 
 	if (lBlocks.Num() <= 1)
 	{
-		OnLevelWin.Broadcast(SaveCurrentGameData());
+		SaveLevelData();
+		OnLevelWin.Broadcast(SaveGameData());
 	}
 }
 
@@ -66,14 +67,7 @@ void AArk_GameStateBase::CheckAllBallsCounter()
 {
 	if (CurrentVausPawn && CurrentVausPawn->NumBalls <= 0)
 	{
-		TArray<AActor*> lBalls;
-
-		UGameplayStatics::GetAllActorsOfClass(
-			GetWorld(),
-			ABall::StaticClass(),
-			lBalls);
-
-		if (lBalls.Num() <= 1)
+		if (GetNumberBallsOnLevel() <= 1)
 		{
 			DecLives();
 
@@ -111,7 +105,8 @@ int32& AArk_GameStateBase::GetNumBufferBalls()
 
 void AArk_GameStateBase::GameOver()
 {
-	OnGameOver.Broadcast(SaveCurrentGameData());
+	ClearLevelData();
+	OnGameOver.Broadcast(SaveGameData());
 }
 
 void AArk_GameStateBase::DecLives()
@@ -120,69 +115,82 @@ void AArk_GameStateBase::DecLives()
 
 	OnLivesCounter.Broadcast(CurrentLives);
 }
+
+int32 AArk_GameStateBase::GetNumberBallsOnLevel()
+{
+	TArray<AActor*> lBalls;
+
+	UGameplayStatics::GetAllActorsOfClass(
+		GetWorld(),
+		ABall::StaticClass(),
+		lBalls);
+
+	return lBalls.Num();
+}
 //--------------------------------------------------------------------------------------
 
 
 
-/* ---   Saving   --- */
+/* ---   Game Instance   --- */
 
 void AArk_GameStateBase::Init()
 {
 	CurrentSavingInstance = GetWorld()->GetGameInstance<UArk_GameInstance>();
 
-	if (CurrentSavingInstance)
-	{
-		RecordScore = LoadGameData().RecordScore;
-	}
-	else
+	if (!CurrentSavingInstance)
 	{
 		UE_LOG(LogTemp, Error, TEXT("AArk_GameStateBase::Init: CurrentSavingInstance is NOT"));
 	}
-}
 
-bool AArk_GameStateBase::SaveCurrentGameData()
+	UpdateGameData();
+	UpdateLevelData();
+	UpdateLevelNumber();
+}
+//--------------------------------------------------------------------------------------
+
+
+
+/* ---   Game Saving   --- */
+
+bool AArk_GameStateBase::SaveGameData()
 {
 	bool blResult = false;
 
 	if (CurrentSavingInstance)
 	{
-		FGameData lData;
-
 		// Проверка нового рекорда
-		if (RecordScore >= CurrentScore)
+		if (CurrentScore > RecordScore)
 		{
-			lData.RecordScore = RecordScore;
-		}
-		else
-		{
+			FGameData lData;
 			lData.RecordScore = CurrentScore;
+
+			// Сохранение актуальных данных
+			CurrentSavingInstance->SaveGameData(lData);
+
 			blResult = true;
 		}
-
-		// Сохранение актуальных данных
-		CurrentSavingInstance->SaveGameData(lData);
 	}
 
 	return blResult;
 }
 
-FGameData AArk_GameStateBase::LoadGameData()
+void AArk_GameStateBase::UpdateGameData()
 {
 	if (CurrentSavingInstance)
 	{
-		return CurrentSavingInstance->LoadGameData();
-	}
+		FGameData lData = CurrentSavingInstance->LoadGameData();
 
-	return FGameData::Empty;
+		RecordScore = lData.RecordScore;
+	}
 }
 
 void AArk_GameStateBase::ClearGameData()
 {
 	if (CurrentSavingInstance)
 	{
-		RecordScore = 0;
-
 		CurrentSavingInstance->SaveGameData(FGameData::Empty);
+
+		RecordScore = 0;
 	}
 }
 //--------------------------------------------------------------------------------------
@@ -197,14 +205,91 @@ void AArk_GameStateBase::ToNextLevel()
 	{
 		do
 		{
-			++CurrentLevelNumber;
+			if (0 <= CurrentLevelNumber && CurrentLevelNumber < LevelsInOrder.Num())
+			{
+				++CurrentLevelNumber;
+			}
+			else
+			{
+				CurrentLevelNumber = 0;
+			}
+
 		} while (!LevelsInOrder.IsValidIndex(CurrentLevelNumber));
 
-		UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), LevelsInOrder[0]);
+		ToSelectedLevel(CurrentLevelNumber);
 	}
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("AArk_GameStateBase::ToNextLevel: LevelsInOrder[0] is NOT Valid"));
+	}
+}
+
+void AArk_GameStateBase::ToSelectedLevel(const int32& iSelect)
+{
+	if (LevelsInOrder.IsValidIndex(iSelect))
+	{
+		SaveLevelNumber(iSelect);
+
+		UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), LevelsInOrder[iSelect]);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("AArk_GameStateBase::ToSelectedLevel: LevelsInOrder[%d] is NOT Valid"), iSelect);
+	}
+}
+
+void AArk_GameStateBase::UpdateLevelNumber()
+{
+	if (CurrentSavingInstance)
+	{
+		CurrentLevelNumber = CurrentSavingInstance->LoadLevelNumber();
+	}
+}
+
+void AArk_GameStateBase::SaveLevelNumber(const int32& iNumber)
+{
+	if (CurrentSavingInstance)
+	{
+		CurrentSavingInstance->SaveLevelNumber(iNumber);
+	}
+}
+//--------------------------------------------------------------------------------------
+
+
+
+/* ---   Levels Saving   --- */
+
+void AArk_GameStateBase::UpdateLevelData()
+{
+	if (CurrentSavingInstance)
+	{
+		FLevelData lData = CurrentSavingInstance->LoadLevelData();
+
+		CurrentLives = lData.Lives;
+		CurrentScore = lData.Score;
+		BufferBallCounter = lData.Balls;
+	}
+}
+
+void AArk_GameStateBase::SaveLevelData()
+{
+	if (CurrentSavingInstance)
+	{
+		FLevelData lData;
+
+		lData.Lives = CurrentLives;
+		lData.Score = CurrentScore;
+		lData.Balls = BufferBallCounter + GetNumberBallsOnLevel();
+
+		CurrentSavingInstance->SaveLevelData(lData);
+	}
+}
+
+void AArk_GameStateBase::ClearLevelData()
+{
+	if (CurrentSavingInstance)
+	{
+		CurrentSavingInstance->SaveLevelData(FLevelData::Empty);
 	}
 }
 //--------------------------------------------------------------------------------------

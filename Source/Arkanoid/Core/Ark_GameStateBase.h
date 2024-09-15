@@ -8,6 +8,7 @@
 
 // Interaction:
 #include "Arkanoid/Tools/Saving/GameData.h"
+#include "Arkanoid/Tools/Saving/LevelData.h"
 
 // Generated:
 #include "Ark_GameStateBase.generated.h"
@@ -114,17 +115,9 @@ public:
 
 
 
-	/* ---   Saving   --- */
+	/* ---   Game Saving   --- */
 
-	/**	Сохранение текущих данных игры */
-	UFUNCTION(BlueprintCallable, Category = "Saving")
-	bool SaveCurrentGameData();
-
-	/**	Получение данных игры */
-	UFUNCTION(BlueprintCallable, Category = "Saving")
-	FGameData LoadGameData();
-
-	/**	Сохранение данных игры */
+	/**	Обнуление данных игры */
 	UFUNCTION(BlueprintCallable, Category = "Saving")
 	void ClearGameData();
 	//-------------------------------------------
@@ -137,9 +130,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters")
 	TArray<TSoftObjectPtr<UWorld>> LevelsInOrder;
 
-	// Номер текущего уровня
-	int32 CurrentLevelNumber = 0;
-
 	//
 
 	/**	Переход на следующий уровень
@@ -147,6 +137,12 @@ public:
 	*/
 	UFUNCTION(BlueprintCallable, Category = "LevelsControl")
 	void ToNextLevel();
+
+	/**	Переход на выбранный уровень
+	@note	Выбор из списка уровней "LevelsInOrder"
+	*/
+	UFUNCTION(BlueprintCallable, Category = "LevelsControl")
+	void ToSelectedLevel(const int32& Select);
 	//-------------------------------------------
 
 
@@ -174,16 +170,63 @@ private:
 
 	/** Метод, хранящий действия при Уменьшении количества жизней */
 	void DecLives();
+
+	/** Получить количество Мячей на уровне */
+	int32 GetNumberBallsOnLevel();
 	//-------------------------------------------
 
 
 
-	/* ---   Saving   --- */
+	/* ---   Game Instance   --- */
 
-	// Указатель на текущий SavingInstance
+	// Указатель на текущий GameInstance
 	UArk_GameInstance* CurrentSavingInstance;
+
+	//
 
 	/** Инициализация данных GameState */
 	void Init();
+	//-------------------------------------------
+
+
+
+	/* ---   Game Saving   --- */
+
+	/**	Сохранение текущих данных игры */
+	bool SaveGameData();
+
+	/**	Получение данных игры */
+	void UpdateGameData();
+	//-------------------------------------------
+
+
+
+	/* ---   Levels Control   --- */
+
+	// Номер текущего Уровня
+	int32 CurrentLevelNumber = -1;
+
+	//
+
+	/** Обновить текущие номер Уровня */
+	void UpdateLevelNumber();
+
+	/** Сохранить текущие номер Уровня */
+	void SaveLevelNumber(const int32& iNumber);
+
+	//-------------------------------------------
+
+
+
+	/* ---   Levels Saving   --- */
+
+	/** Обновить текущие данные Уровня */
+	void UpdateLevelData();
+
+	/** Сохранить текущие данные Уровня */
+	void SaveLevelData();
+
+	/**	Обнуление данных Уровня */
+	void ClearLevelData();
 	//-------------------------------------------
 };

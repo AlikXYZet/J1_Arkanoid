@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+п»ї// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -22,7 +22,7 @@ class ARKANOID_API USavedGameData : public USaveGame
 	
 public:
 
-	// Рекордное количество набранных очков за игру
+	// Р РµРєРѕСЂРґРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РЅР°Р±СЂР°РЅРЅС‹С… РѕС‡РєРѕРІ Р·Р° РёРіСЂСѓ
 	UPROPERTY(BlueprintReadOnly)
 	FGameData GameData;
 };
