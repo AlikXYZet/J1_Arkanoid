@@ -9,7 +9,6 @@
 // Interaction:
 #include "Arkanoid/Tools/Saving/GameData.h"
 #include "Arkanoid/Tools/Saving/LevelData.h"
-#include "Arkanoid/Tools/TableRow/LevelTableRow.h"
 
 // Generated:
 #include "Ark_GameStateBase.generated.h"
@@ -136,29 +135,6 @@ public:
 
 
 
-	/* ---   Levels Control   --- */
-
-	// Список (таблица) запускаемых уровней
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters")
-	UDataTable* LevelTable;
-
-	//
-
-	/**	Переход на следующий уровень
-	@note	Циклично по списку уровней "LevelsInOrder"
-	*/
-	UFUNCTION(BlueprintCallable, Category = "LevelsControl")
-	void ToNextLevel();
-
-	/**	Переход на выбранный уровень
-	@note	Выбор из списка уровней "LevelsInOrder"
-	*/
-	UFUNCTION(BlueprintCallable, Category = "LevelsControl")
-	void ToSelectedLevel(const int32& Select);
-	//-------------------------------------------
-
-
-
 private:
 
 	/* ---   Statistics   --- */
@@ -206,26 +182,6 @@ private:
 
 	/**	Получение данных игры */
 	void UpdateGameData();
-	//-------------------------------------------
-
-
-
-	/* ---   Levels Control   --- */
-
-	// Список запускаемых уровней, полученный из таблицы
-	TArray<FLevelTableRow*> LevelsInOrder;
-
-	// Номер текущего Уровня
-	int32 CurrentLevelNumber = -1;
-
-	//
-
-	/** Обновить текущие номер Уровня */
-	void UpdateLevelNumber();
-
-	/** Сохранить текущие номер Уровня */
-	void SaveLevelNumber(const int32& iNumber);
-
 	//-------------------------------------------
 
 

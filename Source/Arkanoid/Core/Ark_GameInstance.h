@@ -9,6 +9,7 @@
 // Interaction:
 #include "Arkanoid/Tools/Saving/GameData.h"
 #include "Arkanoid/Tools/Saving/LevelData.h"
+#include "Arkanoid/Tools/TableRow/LevelTableRow.h"
 
 // Generated:
 #include "Ark_GameInstance.generated.h"
@@ -34,32 +35,21 @@ class ARKANOID_API UArk_GameInstance : public UGameInstance
 
 public:
 
-	/* ---   Game Saving   --- */
+	/* ---   Base   --- */
 
 	/** Инициализация данных GameInstance */
 	virtual void Init() override;
+	//-------------------------------------------
+
+
+
+	/* ---   Game Saving   --- */
 
 	/** Сохранение игровых данных */
 	void SaveGameData(const FGameData& iGameData) const;
 
 	/** Получение игровых данных */
 	FGameData LoadGameData() const;
-	//-------------------------------------------
-
-
-
-	/* ---   Levels Control   --- */
-
-	// Номер Уровня
-	int32 LevelNumber = -1;
-
-	//
-
-	/** Сохранение номера Уровня */
-	void SaveLevelNumber(const int32& iNumber);
-
-	/** Получение номера Уровня */
-	int32 LoadLevelNumber();
 	//-------------------------------------------
 
 
@@ -75,6 +65,35 @@ public:
 
 
 
+	/* ---   Levels Control   --- */
+
+	// Список (таблица) запускаемых уровней
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters")
+	UDataTable* LevelTable;
+
+	//
+
+	/**	Запуск новой игры
+	@note	Сбрасывает текущие данные игры и запускает первый уровень
+	*/
+	UFUNCTION(BlueprintCallable, Category = "LevelsControl")
+	void ToNewGame(const int32 Select = 0);
+
+	/**	Переход на следующий уровень
+	@note	Циклично по списку уровней "LevelsInOrder"
+	*/
+	UFUNCTION(BlueprintCallable, Category = "LevelsControl")
+	void ToNextLevel();
+
+	/**	Переход на выбранный уровень
+	@note	Выбор из списка уровней "LevelsInOrder"
+	*/
+	UFUNCTION(BlueprintCallable, Category = "LevelsControl")
+	void ToSelectedLevel(const int32& Select);
+	//-------------------------------------------
+
+
+
 private:
 
 	/* ---   Game Saving   --- */
@@ -85,6 +104,11 @@ private:
 	// Сохраняемые данные Игры
 	UPROPERTY()
 	USavedGameData* SaveGame;
+
+	//
+
+	/** Инициализация метода сохранения данных игры */
+	void GameSavingInit();
 	//-------------------------------------------
 
 
@@ -93,5 +117,21 @@ private:
 
 	// Сохраняемые данные Уровня
 	FLevelData LevelData;
+	//-------------------------------------------
+
+
+
+	/* ---   Levels Control   --- */
+
+	// Список запускаемых уровней, полученный из таблицы
+	TArray<FLevelTableRow*> LevelsInOrder;
+
+	// Номер текущего Уровня
+	int32 CurrentLevelNumber = -1;
+
+	//
+
+	/** Инициализация метода управления уровнями */
+	void LevelsControlInit();
 	//-------------------------------------------
 };

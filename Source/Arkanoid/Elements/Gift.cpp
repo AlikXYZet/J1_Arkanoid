@@ -9,7 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 
 // Interaction:
-#include "Arkanoid/Core/Ark_VausPawn.h"
+#include "Arkanoid/Core/Game/Ark_VausPawn.h"
 #include "Ball.h"
 //--------------------------------------------------------------------------------------
 

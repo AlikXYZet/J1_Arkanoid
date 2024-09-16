@@ -10,7 +10,7 @@
 // Interaction:
 #include "Ark_PlayerController.h"
 #include "Ark_VausPawn.h"
-#include "Ark_GameInstance.h"
+#include "Arkanoid/Core/Ark_GameInstance.h"
 #include "Arkanoid/Elements/Ball.h"
 #include "Arkanoid/Elements/Block.h"
 #include "Arkanoid/Tools/Saving/SavedGameData.h"
@@ -151,53 +151,6 @@ void AArk_GameStateBase::Init()
 
 	UpdateGameData();
 	UpdateLevelData();
-	UpdateLevelNumber();
-	//-------------------------------------------
-
-
-
-	/* ---   Levels Control   --- */
-
-	// Фильтрация таблицы уровней в массив
-	if (LevelTable
-		&& LevelTable->GetRowStruct() == FLevelTableRow::StaticStruct())
-	{
-		LevelsInOrder.Empty();
-
-		TArray<FLevelTableRow*> lFromTable;
-
-		LevelTable->GetAllRows<FLevelTableRow>("Ark_GameStateBase::LevelTable", lFromTable);
-
-		if (int32 lNum = lFromTable.Num())
-		{
-			FLevelTableRow* lRow = nullptr;
-
-			// Фильтрация данных таблицы по валидности карты Уровня:
-			for (int32 i = 0; i < lNum; ++i)
-			{
-				lRow = lFromTable[i];
-
-				if (lRow->Map.GetAssetName().Len())
-				{
-					LevelsInOrder.Add(lFromTable[i]);
-				}
-				else
-				{
-					UE_LOG(LogTemp, Warning,
-						TEXT("AArk_GameStateBase::Init: Map in Row #%d from Table is NOT configured"),
-						i + 1);
-				}
-			}
-		}
-	}
-	else if (!LevelTable)
-	{
-		UE_LOG(LogTemp, Error, TEXT("AArk_GameStateBase::Init: LevelTable is NOT"));
-	}
-	else if (LevelTable->GetRowStruct() != FLevelTableRow::StaticStruct())
-	{
-		UE_LOG(LogTemp, Error, TEXT("AArk_GameStateBase::Init: LevelTable structure is NOT an FLevelTableRow"));
-	}
 	//-------------------------------------------
 }
 //--------------------------------------------------------------------------------------
@@ -245,62 +198,6 @@ void AArk_GameStateBase::ClearGameData()
 		CurrentSavingInstance->SaveGameData(FGameData::Empty);
 
 		RecordScore = 0;
-	}
-}
-//--------------------------------------------------------------------------------------
-
-
-
-/* ---   Levels Control   --- */
-
-void AArk_GameStateBase::ToNextLevel()
-{
-	if (LevelsInOrder.IsValidIndex(0))
-	{
-		if (0 <= CurrentLevelNumber && CurrentLevelNumber < LevelsInOrder.Num())
-		{
-			++CurrentLevelNumber;
-		}
-		else
-		{
-			CurrentLevelNumber = 0;
-		}
-
-		ToSelectedLevel(CurrentLevelNumber);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("AArk_GameStateBase::ToNextLevel: LevelsInOrder[0] is NOT Valid"));
-	}
-}
-
-void AArk_GameStateBase::ToSelectedLevel(const int32& iSelect)
-{
-	if (LevelsInOrder.IsValidIndex(iSelect))
-	{
-		SaveLevelNumber(iSelect);
-
-		UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), LevelsInOrder[iSelect]->Map);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("AArk_GameStateBase::ToSelectedLevel: LevelsInOrder[%d] is NOT Valid"), iSelect);
-	}
-}
-
-void AArk_GameStateBase::UpdateLevelNumber()
-{
-	if (CurrentSavingInstance)
-	{
-		CurrentLevelNumber = CurrentSavingInstance->LoadLevelNumber();
-	}
-}
-
-void AArk_GameStateBase::SaveLevelNumber(const int32& iNumber)
-{
-	if (CurrentSavingInstance)
-	{
-		CurrentSavingInstance->SaveLevelNumber(iNumber);
 	}
 }
 //--------------------------------------------------------------------------------------

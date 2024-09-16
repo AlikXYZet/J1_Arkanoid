@@ -6,7 +6,7 @@
 // Interaction:
 #include "Arkanoid/Tools/MyRandom.h"
 #include "Gift.h"
-#include "Arkanoid/Core/Ark_GameStateBase.h"
+#include "Arkanoid/Core/Game/Ark_GameStateBase.h"
 //--------------------------------------------------------------------------------------
 
 
