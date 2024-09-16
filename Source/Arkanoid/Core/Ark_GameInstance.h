@@ -109,6 +109,10 @@ private:
 
 	/** Инициализация метода сохранения данных игры */
 	void GameSavingInit();
+
+	/**	Обнуление данных игры */
+	UFUNCTION(BlueprintCallable, Category = "Saving")
+	void ClearGameData();
 	//-------------------------------------------
 
 

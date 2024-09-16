@@ -118,7 +118,7 @@ void ABlock::SpawnGift()
 					GetWorld()->SpawnActor<AGift>(
 						Data.GiftType.Get(),
 						GetActorLocation(),
-						FRotator());
+						FRotator(0));
 
 					break; // Выход из цикла
 				}

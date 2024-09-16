@@ -40,6 +40,11 @@ void UArk_GameInstance::GameSavingInit()
 	}
 }
 
+void UArk_GameInstance::ClearGameData()
+{
+	SaveGameData(FGameData::Empty);
+}
+
 void UArk_GameInstance::SaveGameData(const FGameData& iGameData) const
 {
 	if (SaveGame)

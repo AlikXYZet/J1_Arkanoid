@@ -190,16 +190,6 @@ void AArk_GameStateBase::UpdateGameData()
 		RecordScore = lData.RecordScore;
 	}
 }
-
-void AArk_GameStateBase::ClearGameData()
-{
-	if (CurrentSavingInstance)
-	{
-		CurrentSavingInstance->SaveGameData(FGameData::Empty);
-
-		RecordScore = 0;
-	}
-}
 //--------------------------------------------------------------------------------------
 
 

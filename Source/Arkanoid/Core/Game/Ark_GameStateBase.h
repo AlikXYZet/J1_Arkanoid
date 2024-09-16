@@ -126,15 +126,6 @@ public:
 
 
 
-	/* ---   Game Saving   --- */
-
-	/**	Обнуление данных игры */
-	UFUNCTION(BlueprintCallable, Category = "Saving")
-	void ClearGameData();
-	//-------------------------------------------
-
-
-
 private:
 
 	/* ---   Statistics   --- */
