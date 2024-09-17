@@ -85,11 +85,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "LevelsControl")
 	void ToNextLevel();
 
-	/**	Переход на выбранный уровень
-	@note	Выбор из списка уровней "LevelsInOrder"
-	*/
+	/**	Получить отфильтрованный список уровней */
 	UFUNCTION(BlueprintCallable, Category = "LevelsControl")
-	void ToSelectedLevel(const int32& Select);
+	TArray<FLevelTableRow> GetLevels();
 	//-------------------------------------------
 
 
@@ -128,7 +126,7 @@ private:
 	/* ---   Levels Control   --- */
 
 	// Список запускаемых уровней, полученный из таблицы
-	TArray<FLevelTableRow*> LevelsInOrder;
+	TArray<FLevelTableRow> LevelsInOrder;
 
 	// Номер текущего Уровня
 	int32 CurrentLevelNumber = -1;
@@ -137,5 +135,10 @@ private:
 
 	/** Инициализация метода управления уровнями */
 	void LevelsControlInit();
+
+	/**	Переход на выбранный уровень
+	@note	Выбор из списка уровней "LevelsInOrder"
+	*/
+	void ToSelectedLevel(const int32& Select);
 	//-------------------------------------------
 };

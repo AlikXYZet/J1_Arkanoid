@@ -116,7 +116,7 @@ void UArk_GameInstance::LevelsControlInit()
 
 				if (lRow->Map.GetAssetName().Len())
 				{
-					LevelsInOrder.Add(lFromTable[i]);
+					LevelsInOrder.Add(*lFromTable[i]);
 				}
 				else
 				{
@@ -171,11 +171,16 @@ void UArk_GameInstance::ToNextLevel()
 	}
 }
 
+TArray<FLevelTableRow> UArk_GameInstance::GetLevels()
+{
+	return LevelsInOrder;
+}
+
 void UArk_GameInstance::ToSelectedLevel(const int32& iSelect)
 {
 	if (LevelsInOrder.IsValidIndex(iSelect))
 	{
-		UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), LevelsInOrder[iSelect]->Map);
+		UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), LevelsInOrder[iSelect].Map);
 	}
 	else
 	{
