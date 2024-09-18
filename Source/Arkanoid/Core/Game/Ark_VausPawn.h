@@ -6,6 +6,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 
+// Interaction:
+#include "Arkanoid/Elements/Ball.h"
+
 // Generated:
 #include "Ark_VausPawn.generated.h"
 //--------------------------------------------------------------------------------------
@@ -113,6 +116,16 @@ public:
 	/** Добавление Коэффициента перемещения */
 	UFUNCTION(BlueprintCallable, Category = "Gift")
 	void AddWidth(const float AddValue = 0.1f);
+
+	/** Установить режим в течение установленного времени для всех Мячей на поле */
+	UFUNCTION(BlueprintCallable, Category = "Gift")
+	void SetBallsModeForTime(const float Time = 10.f, const EBallMode Mode = EBallMode::Base);
+
+	/** Получить указатели на мячи
+	@warning	Есть риск получить НЕ ВАЛИДНЫЙ указатель. Проверяйте указатель перед использованием!
+	*/
+	UFUNCTION(BlueprintCallable, Category = "Gift")
+	TArray<ABall*> GetAllBalls();
 	//-------------------------------------------
 
 
@@ -150,5 +163,23 @@ private:
 
 	/** Обновить статус количества мячей */
 	void UpdateBallCountStatistics(const int32& iNumber);
+	//-------------------------------------------
+
+
+
+	/* ---   Gift   --- */
+
+	// Массив "модифицированных" мячей (с режимом != EBallMode::Base)
+	TArray<ABall*> ModifiedBalls;
+
+	// Таймер для режима Мячей
+	FTimerHandle Timer_BallsMode;
+
+	//
+
+	/** Сброс режима для всех ранее изменённых Мячей на поле
+	@note	Устанавливает режим EBallMode::Base
+	*/
+	void ResetBallsModeForTime();
 	//-------------------------------------------
 };

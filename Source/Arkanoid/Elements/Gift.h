@@ -76,11 +76,5 @@ public:
 	/**	Реакция на подбор Пешкой */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Reactions", meta = (DisplayName = "Is Taken"))
 	void EventIsTaken(AArk_VausPawn* VausPawn);
-
-	/** Получить указатели на мячи
-	@warning	Есть риск получить НЕ ВАЛИДНУЮ ссылку. Проверяйте перед использованием
-	*/
-	UFUNCTION(BlueprintCallable, Category = "Reactions")
-	TArray<ABall*> GetAllBalls();
 	//--------------------------------------------------------------------------------------
 };

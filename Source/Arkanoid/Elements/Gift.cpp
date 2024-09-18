@@ -62,24 +62,3 @@ void AGift::NotifyActorBeginOverlap(AActor* OtherActor)
 	}
 }
 //--------------------------------------------------------------------------------------
-
-
-
-/* ---   Reactions   --- */
-
-TArray<ABall*> AGift::GetAllBalls()
-{
-	TArray<ABall*> lResult;
-	TArray<AActor*> lResultActors;
-
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABall::StaticClass(), lResultActors);
-	// TODO: вставьте здесь оператор return
-
-	for (AActor* Data : lResultActors)
-	{
-		lResult.Add(Cast<ABall>(Data));
-	}
-
-	return lResult;
-}
-//--------------------------------------------------------------------------------------

@@ -71,6 +71,15 @@ protected:
 
 public:
 
+	/* ---   Statistics   --- */
+
+	// Количество очков за блок
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters")
+	int32 ScoreNumber = 100;
+	//-------------------------------------------
+
+
+
 	/* ---   Destroyed   --- */
 
 	// Массив материалов для каждого Уровня жизни блока
@@ -106,16 +115,15 @@ public:
 
 
 
+private:
+
 	/* ---   Statistics   --- */
 
-	// Количество очков за блок
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters")
-	int32 ScoreNumber = 100;
+	/** Добавить количества Очков */
+	void AddScores();
 	//-------------------------------------------
 
 
-
-private:
 
 	/* ---   Destroyed   --- */
 
@@ -128,11 +136,4 @@ private:
 	virtual void Destroyed() override;
 	//-------------------------------------------
 
-
-
-	/* ---   Statistics   --- */
-
-	/** Добавить количества Очков */
-	void AddScores();
-	//-------------------------------------------
 };

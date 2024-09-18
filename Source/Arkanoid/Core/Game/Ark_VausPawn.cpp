@@ -7,9 +7,9 @@
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
 #include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Interaction:
-#include "Arkanoid/Elements/Ball.h"
 #include "Ark_GameStateBase.h"
 #include "Ark_PlayerController.h"
 //--------------------------------------------------------------------------------------
@@ -34,6 +34,7 @@ AArk_VausPawn::AArk_VausPawn()
 	VausMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Vaus Mesh"));
 	VausMesh->SetupAttachment(RootComponent);
 	VausMesh->SetCastShadow(false);
+	VausMesh->SetCollisionProfileName(TEXT("Pawn"));
 
 	ResetDefaultTransform();
 
@@ -112,15 +113,10 @@ void AArk_VausPawn::BallLaunch()
 
 	if (lNumBalls > 0)
 	{
-		// Параметр спавна: Не создавать, если что-то мешает
-		FActorSpawnParameters lSpawnParameters = FActorSpawnParameters();
-		lSpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::DontSpawnIfColliding;
-
 		ABall* lBlock = GetWorld()->SpawnActor<ABall>(
 			BallType.Get(),
 			VausMesh->GetComponentLocation() + FVector(20.f, 0.f, 0.f),
-			FRotator(0.f, SpawnYaw, 0.f),
-			lSpawnParameters);
+			FRotator(0.f, SpawnYaw, 0.f));
 
 		// Если мяч создан, то уменьшить счётчик
 		if (lBlock)
@@ -195,6 +191,47 @@ void AArk_VausPawn::AddWidth(const float iAddValue)
 		}
 
 		VausMesh->SetRelativeScale3D(lScale);
+	}
+}
+
+void AArk_VausPawn::SetBallsModeForTime(const float iTime, const EBallMode iMode)
+{
+	ModifiedBalls = GetAllBalls();
+
+	for (ABall* lBall : ModifiedBalls)
+	{
+		if (lBall)
+		{
+			lBall->SetMode(iMode);
+		}
+	}
+
+	GetWorldTimerManager().SetTimer(Timer_BallsMode, this, &AArk_VausPawn::ResetBallsModeForTime, iTime, false);
+}
+
+TArray<ABall*> AArk_VausPawn::GetAllBalls()
+{
+	TArray<ABall*> lResult;
+	TArray<AActor*> lResultActors;
+
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABall::StaticClass(), lResultActors);
+
+	for (AActor* Data : lResultActors)
+	{
+		lResult.Add(Cast<ABall>(Data));
+	}
+
+	return lResult;
+}
+
+void AArk_VausPawn::ResetBallsModeForTime()
+{
+	for (ABall* lBall : ModifiedBalls)
+	{
+		if (lBall)
+		{
+			lBall->SetMode(EBallMode::Base);
+		}
 	}
 }
 //--------------------------------------------------------------------------------------

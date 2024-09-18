@@ -24,6 +24,14 @@ ABall::ABall()
 
 
 
+	/* ---   Actor   --- */
+
+	// Параметр спавна: Не создавать, если что-то мешает
+	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::DontSpawnIfColliding;
+	//-------------------------------------------
+
+
+
 	/* ---   Components   --- */
 
 	// Корневой компонент
@@ -43,6 +51,17 @@ ABall::ABall()
 	ProjectileMovement->SetPlaneConstraintAxisSetting(EPlaneConstraintAxisSetting::Z);
 	ProjectileMovement->InitialSpeed = StartingVelocity;
 	//-------------------------------------------
+}
+
+
+
+/* ---   Base   --- */
+
+void ABall::BeginPlay()
+{
+	Super::BeginPlay();
+
+	SetMode(EBallMode::Base);
 }
 //--------------------------------------------------------------------------------------
 
@@ -83,6 +102,14 @@ void ABall::NotifyActorBeginOverlap(AActor* OtherActor)
 	if (Cast<AKillZVolume>(OtherActor))
 	{
 		Destroy();
+	}
+
+	if (CurrentMode == EBallMode::Fire)
+	{
+		if (ABlock* lHitBlock = Cast<ABlock>(OtherActor))
+		{
+			lHitBlock->Destroy();
+		}
 	}
 }
 
@@ -129,5 +156,34 @@ void ABall::AddVelocity(float iAddValue)
 
 		ProjectileMovement->Velocity = lDirection * lLenght;
 	}
+}
+
+void ABall::SetMode(EBallMode iMode)
+{
+	CurrentMode = iMode;
+
+	BallMesh->SetMaterial(0, ModeMaterials[uint8(iMode)]);
+
+	switch (CurrentMode)
+	{
+	case EBallMode::Ghost:
+		SetCollisionResponseForWorldDynamic(ECollisionResponse::ECR_Ignore);
+		break;
+
+	case EBallMode::Fire:
+		SetCollisionResponseForWorldDynamic(ECollisionResponse::ECR_Overlap);
+		break;
+
+	default:
+		SetCollisionResponseForWorldDynamic(ECollisionResponse::ECR_Block);
+		break;
+	}
+}
+
+void ABall::SetCollisionResponseForWorldDynamic(ECollisionResponse iECR)
+{
+	BallMesh->SetCollisionResponseToChannel(
+		ECollisionChannel::ECC_WorldDynamic,
+		iECR);
 }
 //--------------------------------------------------------------------------------------

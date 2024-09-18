@@ -49,6 +49,19 @@ void ABlock::BeginPlay()
 
 
 
+/* ---   Statistics   --- */
+
+void ABlock::AddScores()
+{
+	if (AArk_GameStateBase* lCurrentArkGameState = GetWorld()->GetGameState<AArk_GameStateBase>())
+	{
+		lCurrentArkGameState->AddScore(ScoreNumber);
+	}
+}
+//--------------------------------------------------------------------------------------
+
+
+
 /* ---   Destroyed   --- */
 
 void ABlock::Destroyed()
@@ -112,7 +125,7 @@ void ABlock::SpawnGift()
 			if (Data.AppearanceChance > 0)
 			{
 				lRand -= Data.AppearanceChance;
-				
+
 				if (lRand <= 0)
 				{
 					GetWorld()->SpawnActor<AGift>(
@@ -124,19 +137,6 @@ void ABlock::SpawnGift()
 				}
 			}
 		}
-	}
-}
-//--------------------------------------------------------------------------------------
-
-
-
-/* ---   Statistics   --- */
-
-void ABlock::AddScores()
-{
-	if (AArk_GameStateBase* lCurrentArkGameState = GetWorld()->GetGameState<AArk_GameStateBase>())
-	{
-		lCurrentArkGameState->AddScore(ScoreNumber);
 	}
 }
 //--------------------------------------------------------------------------------------
