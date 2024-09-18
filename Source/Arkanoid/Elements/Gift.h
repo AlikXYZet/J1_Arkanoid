@@ -16,6 +16,10 @@
 
 // UE:
 class UProjectileMovementComponent;
+class UParticleSystemComponent;
+
+// Plugins:
+class UNiagaraComponent;
 
 // Interaction:
 class AArk_VausPawn;
@@ -48,6 +52,12 @@ public:
 	/** Компонент передвижения Подарка */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UParticleSystemComponent* FXComponent = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UNiagaraComponent* NiagaraFXComponent = nullptr;
 	//-------------------------------------------
 
 

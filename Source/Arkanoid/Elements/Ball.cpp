@@ -6,6 +6,10 @@
 // UE:
 #include "GameFramework/KillZVolume.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Particles/ParticleSystemComponent.h"
+
+// Plugins:
+#include "NiagaraComponent.h"
 
 // Interaction:
 #include "Block.h"
@@ -50,6 +54,14 @@ ABall::ABall()
 	ProjectileMovement->bConstrainToPlane = true;
 	ProjectileMovement->SetPlaneConstraintAxisSetting(EPlaneConstraintAxisSetting::Z);
 	ProjectileMovement->InitialSpeed = StartingVelocity;
+
+	// FX
+	FXComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("FX"));
+	FXComponent->SetupAttachment(RootComponent);
+
+	// FX Niagara
+	NiagaraFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("FX Niagara"));
+	NiagaraFXComponent->SetupAttachment(RootComponent);
 	//-------------------------------------------
 }
 
@@ -61,7 +73,7 @@ void ABall::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetMode(EBallMode::Base);
+	RememberBaseVisual();
 }
 //--------------------------------------------------------------------------------------
 
@@ -157,33 +169,58 @@ void ABall::AddVelocity(float iAddValue)
 		ProjectileMovement->Velocity = lDirection * lLenght;
 	}
 }
+//--------------------------------------------------------------------------------------
+
+
+
+/* ---   Ball Mode: Materials and FX   --- */
 
 void ABall::SetMode(EBallMode iMode)
 {
 	CurrentMode = iMode;
 
-	BallMesh->SetMaterial(0, ModeMaterials[uint8(iMode)]);
-
+	// Collision:
 	switch (CurrentMode)
 	{
 	case EBallMode::Ghost:
-		SetCollisionResponseForWorldDynamic(ECollisionResponse::ECR_Ignore);
+		SetCollisionResponseToWorldDynamic(ECollisionResponse::ECR_Ignore);
 		break;
 
 	case EBallMode::Fire:
-		SetCollisionResponseForWorldDynamic(ECollisionResponse::ECR_Overlap);
+		SetCollisionResponseToWorldDynamic(ECollisionResponse::ECR_Overlap);
 		break;
 
 	default:
-		SetCollisionResponseForWorldDynamic(ECollisionResponse::ECR_Block);
+		SetCollisionResponseToWorldDynamic(ECollisionResponse::ECR_Block);
 		break;
+	}
+
+	// Visual:
+	if (CurrentMode == EBallMode::Base)
+	{
+		BallMesh->SetMaterial(0, BaseMaterials);
+		FXComponent->SetTemplate(BaseParticle);
+		NiagaraFXComponent->SetAsset(BaseNiagara);
+	}
+	else
+	{
+		BallMesh->SetMaterial(0, ModeMaterials[uint8(CurrentMode)]);
+		FXComponent->SetTemplate(ModeFX[uint8(CurrentMode)]);
+		NiagaraFXComponent->SetAsset(ModeNiagaraFX[uint8(CurrentMode)]);
 	}
 }
 
-void ABall::SetCollisionResponseForWorldDynamic(ECollisionResponse iECR)
+void ABall::SetCollisionResponseToWorldDynamic(ECollisionResponse iECR)
 {
 	BallMesh->SetCollisionResponseToChannel(
 		ECollisionChannel::ECC_WorldDynamic,
 		iECR);
+}
+
+void ABall::RememberBaseVisual()
+{
+	BaseMaterials = BallMesh->GetMaterial(0);
+	BaseParticle = FXComponent->Template;
+	BaseNiagara = NiagaraFXComponent->GetAsset();
 }
 //--------------------------------------------------------------------------------------

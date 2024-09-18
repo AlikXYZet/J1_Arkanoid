@@ -7,6 +7,10 @@
 #include "GameFramework/KillZVolume.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
+
+// Plugins:
+#include "NiagaraComponent.h"
 
 // Interaction:
 #include "Arkanoid/Core/Game/Ark_VausPawn.h"
@@ -34,10 +38,18 @@ AGift::AGift()
 	GiftMesh->SetCastShadow(false);
 	GiftMesh->SetCollisionProfileName(TEXT("Trigger"));
 
+	// Контроль передвижения мяча
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile Movement"));
 	ProjectileMovement->ProjectileGravityScale = 0.f;
 	ProjectileMovement->InitialSpeed = StartingVelocity;
 	ProjectileMovement->Velocity = -FVector::XAxisVector;
+
+	// FX
+	FXComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("FX"));
+	FXComponent->SetupAttachment(RootComponent);
+
+	// FX Niagara
+	NiagaraFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("FX Niagara"));
 	//-------------------------------------------
 }
 //--------------------------------------------------------------------------------------

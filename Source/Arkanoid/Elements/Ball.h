@@ -16,6 +16,10 @@
 
 // UE:
 class UProjectileMovementComponent;
+
+// Plugins:
+class UNiagaraComponent;
+class UNiagaraSystem;
 //--------------------------------------------------------------------------------------
 
 
@@ -24,15 +28,13 @@ class UProjectileMovementComponent;
 UENUM(BlueprintType)
 enum struct EBallMode : uint8
 {
-	// Базовый без эффектов
-	Base = 0,
 	// Эффект призрака (Игнорирует объекты типа WorldDynamic)
 	Ghost,
 	// Огненный эффект (Уничтожает блоки с одного касания с игнорированием соприкосновения)
 	Fire,
 
-	// Всегда в конце
-	Max	UMETA(DisplayName = "Invalid")
+	// Базовый без эффектов
+	Base	// Всегда в конце
 };
 
 
@@ -61,6 +63,12 @@ public:
 	/** Компонент передвижения мяча */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UParticleSystemComponent* FXComponent = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UNiagaraComponent* NiagaraFXComponent = nullptr;
 	//-------------------------------------------
 
 
@@ -86,12 +94,6 @@ public:
 	// Минимальная скорость
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters", meta = (ClampMin = "1", UIMin = "1"))
 	float MinVelocity = 50.f;
-
-	/* Материалы режимов мяча
-	@note	Материал "Base" применяется автоматически
-	*/
-	UPROPERTY(EditAnywhere, Category = "Parameters")
-	UMaterialInterface* ModeMaterials[EBallMode::Max];
 	//--------------------------------------------------------------------------------------
 
 
@@ -127,6 +129,25 @@ public:
 	/** Добавление скорости мяча */
 	UFUNCTION(BlueprintCallable, Category = "Gift")
 	void AddVelocity(float AddValue = 50.f);
+	//-------------------------------------------
+
+
+
+	/* ---   Ball Mode: Materials and FX   --- */
+
+	// Материалы режимов мяча
+	UPROPERTY(EditAnywhere, Category = "Parameters")
+	UMaterialInterface* ModeMaterials[EBallMode::Base];
+
+	// Материалы режимов мяча
+	UPROPERTY(EditAnywhere, Category = "Parameters")
+	UParticleSystem* ModeFX[EBallMode::Base];
+
+	// Материалы режимов мяча
+	UPROPERTY(EditAnywhere, Category = "Parameters")
+	UNiagaraSystem* ModeNiagaraFX[EBallMode::Base];
+
+	//
 
 	/** Установка режима текущего Мяча */
 	void SetMode(EBallMode Mode = EBallMode::Base);
@@ -141,6 +162,28 @@ private:
 	// Текущий режим Мяча
 	EBallMode CurrentMode = EBallMode::Base;
 
-	void SetCollisionResponseForWorldDynamic(ECollisionResponse iECR = ECollisionResponse::ECR_Block);
+	//
+
+	/** Установка коллизии с WorldDynamic согласно Режиму мяча */
+	void SetCollisionResponseToWorldDynamic(ECollisionResponse iECR = ECollisionResponse::ECR_Block);
+	//-------------------------------------------
+
+
+
+	/* ---   Ball Mode: Materials and FX   --- */
+
+	// Базовый материал, полученный из BallMesh
+	UMaterialInterface* BaseMaterials = nullptr;
+
+	// Базовый FX, полученный из FXComponent
+	UParticleSystem* BaseParticle = nullptr;
+
+	// Базовый FX Niagara, полученный из NiagaraFXComponent
+	UNiagaraSystem* BaseNiagara = nullptr;
+
+	//
+
+	/** Запомнить базовый визуал, установленный в компонентах Мяча */
+	void RememberBaseVisual();
 	//-------------------------------------------
 };
