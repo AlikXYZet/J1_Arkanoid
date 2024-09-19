@@ -14,6 +14,7 @@
 
 // Interaction:
 #include "Arkanoid/Core/Game/Ark_VausPawn.h"
+#include "Vaus.h"
 #include "Ball.h"
 //--------------------------------------------------------------------------------------
 
@@ -50,6 +51,7 @@ AGift::AGift()
 
 	// FX Niagara
 	NiagaraFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("FX Niagara"));
+	NiagaraFXComponent->SetupAttachment(RootComponent);
 	//-------------------------------------------
 }
 //--------------------------------------------------------------------------------------
@@ -64,6 +66,12 @@ void AGift::NotifyActorBeginOverlap(AActor* OtherActor)
 
 	if (Cast<AKillZVolume>(OtherActor))
 	{
+		Destroy();
+	}
+	else if (AVaus* lVaus = Cast<AVaus>(OtherActor))
+	{
+		EventIsTaken(lVaus->GetPawnPointer());
+
 		Destroy();
 	}
 	else if (AArk_VausPawn* lPawn = Cast<AArk_VausPawn>(OtherActor))

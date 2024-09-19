@@ -19,11 +19,11 @@
 
 // UE:
 class UCameraComponent;
-class USphereComponent;
+class UBoxComponent;
 
 // Interaction:
-class ABall;
 class AArk_GameStateBase;
+class AVaus;
 //--------------------------------------------------------------------------------------
 
 
@@ -45,11 +45,11 @@ public:
 
 	/* ---   Components   --- */
 
-	/** Меш визуализации каретки */
+	// Актор каретки
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* VausMesh = nullptr;
+	UChildActorComponent* VausComponent = nullptr;
 
-	/** Камера Игрока */
+	// Камера Игрока
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* Camera = nullptr;
 	//-------------------------------------------
@@ -76,6 +76,23 @@ protected:
 
 public:
 
+	/* ---   Components   --- */
+
+	/** Указатель на Актор коретки */
+	AVaus* pVausActor = nullptr;
+	//-------------------------------------------
+
+
+
+	/* ---   Move   --- */
+
+	// Лимит передвижения каретки по оси Y
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters")
+	float MoveLimit_Y = 487.5f;
+	//-------------------------------------------
+
+
+
 	/* ---   Statistics   --- */
 
 	// Тип генерируемого мяча
@@ -85,10 +102,6 @@ public:
 	// Минимальное значение Коэффициента перемещения
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters", meta = (ClampMin = "0.5", UIMin = "0.5"))
 	float MinMoveCoeff = 1.f;
-
-	// Минимальная ширина
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters", meta = (ClampMin = "0.1", UIMin = "0.1"))
-	float MinWidth = 0.5f;
 
 	//
 
@@ -113,7 +126,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Gift")
 	void AddBalls(const int32 AddValue = 1);
 
-	/** Добавление Коэффициента перемещения */
+	/** Добавление Ширины каретки */
 	UFUNCTION(BlueprintCallable, Category = "Gift")
 	void AddWidth(const float AddValue = 0.1f);
 
@@ -143,10 +156,23 @@ private:
 	//
 
 	/** Смещение каретки вдоль оси Y с учётом коллизии и Коэффициентом перемещения */
-	void MoveVaus(const float iValue);
+	void MoveVaus(float iValue);
 
 	/** Запуск мяча */
 	void BallLaunch();
+	//-------------------------------------------
+
+
+
+	/* ---   Move   --- */
+
+	// Расчётный лимит передвижения каретки по оси Y, учитывающий её ширину
+	float CurrentMoveLimit_Y;
+
+	//
+	
+	// Расчитать лимит передвижения каретки по оси Y, учитывая её ширину
+	void CalculateMoveLimit_Y();
 	//-------------------------------------------
 
 
@@ -156,10 +182,13 @@ private:
 	// Указатель на текущий GameStateBase
 	AArk_GameStateBase* CurrentArkGameState = nullptr;
 
+	// Базовая локация, полученный из VausMesh
+	FVector BaseLocation = FVector(-460.f, 0.f, 45.f);
+
 	//
 
 	/** Инициализация данных Пешки и передача собственного указателя другим объектам */
-	void Init();
+	void InitStatisticsSystem();
 
 	/** Обновить статус количества мячей */
 	void UpdateBallCountStatistics(const int32& iNumber);

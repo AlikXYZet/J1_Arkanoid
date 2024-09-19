@@ -8,10 +8,12 @@
 #include "Components/InputComponent.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/BoxComponent.h"
 
 // Interaction:
 #include "Ark_GameStateBase.h"
 #include "Ark_PlayerController.h"
+#include "Arkanoid/Elements/Vaus.h"
 //--------------------------------------------------------------------------------------
 
 
@@ -31,12 +33,9 @@ AArk_VausPawn::AArk_VausPawn()
 	// Корневой компонент
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 
-	VausMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Vaus Mesh"));
-	VausMesh->SetupAttachment(RootComponent);
-	VausMesh->SetCastShadow(false);
-	VausMesh->SetCollisionProfileName(TEXT("Pawn"));
-
-	ResetDefaultTransform();
+	VausComponent = CreateDefaultSubobject<UChildActorComponent>(TEXT("Vaus Component"));
+	VausComponent->SetupAttachment(RootComponent);
+	VausComponent->SetRelativeLocation(BaseLocation);
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(RootComponent);
@@ -63,7 +62,20 @@ void AArk_VausPawn::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Init();
+	pVausActor = Cast<AVaus>(VausComponent->GetChildActor());
+
+	if (pVausActor)
+	{
+		pVausActor->SetPawnPointer(this);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("AArk_VausPawn::BeginPlay: pVausActor is NOT"));
+	}
+
+	CalculateMoveLimit_Y();
+
+	InitStatisticsSystem();
 }
 //--------------------------------------------------------------------------------------
 
@@ -89,11 +101,31 @@ void AArk_VausPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	//-------------------------------------------
 }
 
-void AArk_VausPawn::MoveVaus(const float iValue)
+void AArk_VausPawn::MoveVaus(float iValue)
 {
-	if (iValue != 0.f && abs(iValue) <= 1.f)
+	// Корректировка при суммировании нажатий
+	if (iValue)
+		iValue = iValue < 0 ? -1.f : 1.f;
+
+	// Текущая позиция на оси Y
+	float lCurrent_Y = VausComponent->GetRelativeLocation().Y;
+
+	// Заданное смещение местоположения по оси Y
+	float lOffset_Y = iValue * MoveCoeff;
+
+	// Контроль местоположения каретки в заданных пределах
+	if (lOffset_Y > CurrentMoveLimit_Y - lCurrent_Y)
 	{
-		VausMesh->AddWorldOffset(FVector::YAxisVector * iValue * MoveCoeff, true);
+		lOffset_Y = CurrentMoveLimit_Y - lCurrent_Y;
+	}
+	else if (lOffset_Y < -CurrentMoveLimit_Y - lCurrent_Y)
+	{
+		lOffset_Y = -CurrentMoveLimit_Y - lCurrent_Y;
+	}
+
+	if (lOffset_Y)
+	{
+		VausComponent->AddLocalOffset(FVector(0, lOffset_Y, 0));
 
 		// Контроль спавна мяча в направлении движения
 		if (SpawnYaw < 0 && iValue > 0)
@@ -115,7 +147,7 @@ void AArk_VausPawn::BallLaunch()
 	{
 		ABall* lBlock = GetWorld()->SpawnActor<ABall>(
 			BallType.Get(),
-			VausMesh->GetComponentLocation() + FVector(20.f, 0.f, 0.f),
+			VausComponent->GetComponentLocation() + FVector(20.f, 0.f, 0.f),
 			FRotator(0.f, SpawnYaw, 0.f));
 
 		// Если мяч создан, то уменьшить счётчик
@@ -123,6 +155,32 @@ void AArk_VausPawn::BallLaunch()
 		{
 			UpdateBallCountStatistics(lNumBalls - 1);
 		}
+	}
+}
+//--------------------------------------------------------------------------------------
+
+
+
+/* ---   Move   --- */
+
+void AArk_VausPawn::CalculateMoveLimit_Y()
+{
+	if (pVausActor)
+	{
+		FVector lOrigin;
+		FVector lExtent;
+		pVausActor->GetActorBounds(false, lOrigin, lExtent);
+
+		CurrentMoveLimit_Y = MoveLimit_Y - lExtent.Y;
+
+		// Поправить местоположение каретки
+		MoveVaus(0);
+		// PS: Исправляет баг выхода каретки за пределы,
+		// при увеличении её ширины и её местоположении около края Расчётного лимита
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("AArk_VausPawn::CalculateMoveLimit_Y: pVausActor is NOT"));
 	}
 }
 //--------------------------------------------------------------------------------------
@@ -177,20 +235,15 @@ void AArk_VausPawn::AddBalls(const int32 iAddValue)
 
 void AArk_VausPawn::AddWidth(const float iAddValue)
 {
-	FVector lScale = VausMesh->GetRelativeScale3D();
-
-	if (lScale.Y != MinWidth || iAddValue > 0)
+	if (pVausActor)
 	{
-		if (lScale.Y + iAddValue < MinWidth)
-		{
-			lScale.Y = MinWidth;
-		}
-		else
-		{
-			lScale.Y += iAddValue;
-		}
+		pVausActor->AddWidth(iAddValue);
 
-		VausMesh->SetRelativeScale3D(lScale);
+		CalculateMoveLimit_Y();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("AArk_VausPawn::AddWidth: pVausActor is NOT"));
 	}
 }
 
@@ -242,11 +295,19 @@ void AArk_VausPawn::ResetBallsModeForTime()
 
 void AArk_VausPawn::ResetDefaultTransform()
 {
-	VausMesh->SetRelativeLocation(FVector(-460.f, 0.f, 45.f));
-	VausMesh->SetRelativeScale3D(FVector(0.1f, 1.f, 0.4f));
+	VausComponent->SetRelativeLocation(BaseLocation);
+
+	if (pVausActor)
+	{
+		pVausActor->ResetWidth();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("AArk_VausPawn::ResetDefaultTransform: pVausActor is NOT"));
+	}
 }
 
-void AArk_VausPawn::Init()
+void AArk_VausPawn::InitStatisticsSystem()
 {
 	CurrentArkGameState = GetWorld()->GetGameState<AArk_GameStateBase>();
 
@@ -258,6 +319,8 @@ void AArk_VausPawn::Init()
 	{
 		UE_LOG(LogTemp, Error, TEXT("AArk_VausPawn::Init: CurrentArkGameState is NOT"));
 	}
+
+	BaseLocation = VausComponent->GetRelativeLocation();
 }
 
 void AArk_VausPawn::UpdateBallCountStatistics(const int32& iNumber)
