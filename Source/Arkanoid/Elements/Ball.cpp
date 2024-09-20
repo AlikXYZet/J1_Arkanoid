@@ -53,6 +53,7 @@ ABall::ABall()
 	ProjectileMovement->ProjectileGravityScale = 0.f;
 	ProjectileMovement->bConstrainToPlane = true;
 	ProjectileMovement->SetPlaneConstraintAxisSetting(EPlaneConstraintAxisSetting::Z);
+	// Задать начальную скорость
 	ProjectileMovement->InitialSpeed = StartingVelocity;
 
 	// FX
@@ -104,6 +105,20 @@ void ABall::NotifyHit(
 	if (ABlock* lHitBlock = Cast<ABlock>(Other))
 	{
 		lHitBlock->ReductionLives();
+	}
+	else
+	{
+		// Проверка и выход Мяча из "вечного" отскока от стен границ
+		if (FMath::IsNearlyEqual(abs(ProjectileMovement->Velocity.X), 0.f, 5.f))
+		{
+			++BadHitCounter;
+
+			if (BadHitCounter > 3)
+			{
+				BadHitCounter = 0;
+				ProjectileMovement->Velocity.X -= 10.f;
+			}
+		}
 	}
 }
 
