@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+п»ї// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -13,6 +13,13 @@
 
 
 /* ---   Pre-declaration of classes   --- */
+
+// UE:
+class UArrowComponent;
+
+// Plugins:
+class UNiagaraComponent;
+class UNiagaraSystem;
 
 // Interaction:
 class AArk_VausPawn;
@@ -37,17 +44,43 @@ public:
 
 	/* ---   Components   --- */
 
-	/** Меш визуализации каретки */
+	/** РњРµС€ РІРёР·СѓР°Р»РёР·Р°С†РёРё РєР°СЂРµС‚РєРё */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* VausMesh = nullptr;
+	//-------------------------------------------
 
-	/** Меш визуализации каретки */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
+
+
+	/* ---   Components: Left   --- */
+
+	/** Р›РµРІС‹Р№ РєРѕСЂРЅРµРІРѕР№ РєРѕРјРїРѕРЅРµРЅС‚ */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Left", meta = (AllowPrivateAccess = "true"))
+	USceneComponent* LeftRoot = nullptr;
+
+	/** РњРµС€ РІРёР·СѓР°Р»РёР·Р°С†РёРё РєР°СЂРµС‚РєРё */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Left", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* LeftMesh = nullptr;
 
-	/** Меш визуализации каретки */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
+	/** Р’РµРєС‚РѕСЂ СЃ РўСЂР°РЅСЃС„РѕСЂРјР°С†РёРµР№ РґР»СЏ FX-СЂРµР°РєС†РёРё СЃР»РµРІР° */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Left", meta = (AllowPrivateAccess = "true"))
+	UArrowComponent* ArrowLeftFX = nullptr;
+	//-------------------------------------------
+
+
+
+	/* ---   Components: Right   --- */
+
+	/** РџСЂР°РІС‹Р№ РєРѕСЂРЅРµРІРѕР№ РєРѕРјРїРѕРЅРµРЅС‚ */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Right", meta = (AllowPrivateAccess = "true"))
+	USceneComponent* RightRoot = nullptr;
+
+	/** РњРµС€ РІРёР·СѓР°Р»РёР·Р°С†РёРё РєР°СЂРµС‚РєРё */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Right", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* RightMesh = nullptr;
+
+	/** Р’РµРєС‚РѕСЂ СЃ РўСЂР°РЅСЃС„РѕСЂРјР°С†РёРµР№ РґР»СЏ FX-СЂРµР°РєС†РёРё СЃРїСЂР°РІР° */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Right", meta = (AllowPrivateAccess = "true"))
+	UArrowComponent* ArrowRightFX = nullptr;
 	//-------------------------------------------
 
 
@@ -56,7 +89,7 @@ protected:
 
 	/* ---   Base   --- */
 
-	/** Переопределяемое собственное событие, определяющее начало игры для этого актера */
+	/** РџРµСЂРµРѕРїСЂРµРґРµР»СЏРµРјРѕРµ СЃРѕР±СЃС‚РІРµРЅРЅРѕРµ СЃРѕР±С‹С‚РёРµ, РѕРїСЂРµРґРµР»СЏСЋС‰РµРµ РЅР°С‡Р°Р»Рѕ РёРіСЂС‹ РґР»СЏ СЌС‚РѕРіРѕ Р°РєС‚РµСЂР° */
 	void virtual BeginPlay() override;
 	//-------------------------------------------
 
@@ -66,23 +99,69 @@ public:
 
 	/* ---   Gift   --- */
 
-	// Минимальная ширина
+	// РњРёРЅРёРјР°Р»СЊРЅР°СЏ С€РёСЂРёРЅР°
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters", meta = (ClampMin = "0.1", UIMin = "0.1"))
 	float MinWidth = 0.5f;
 
 	//
 
-	/** Добавление Ширины каретки */
+	/** Р”РѕР±Р°РІР»РµРЅРёРµ РЁРёСЂРёРЅС‹ РєР°СЂРµС‚РєРё */
 	void AddWidth(const float AddValue = 0.1f);
 
-	/** Сброс Ширины каретки */
+	/** РЎР±СЂРѕСЃ РЁРёСЂРёРЅС‹ РєР°СЂРµС‚РєРё */
 	void ResetWidth();
 
-	/** Записать указатель на пешку, которому принадлежит */
+	/** Р—Р°РїРёСЃР°С‚СЊ СѓРєР°Р·Р°С‚РµР»СЊ РЅР° РїРµС€РєСѓ, РєРѕС‚РѕСЂРѕРјСѓ РїСЂРёРЅР°РґР»РµР¶РёС‚ */
 	void SetPawnPointer(AArk_VausPawn* iVausPawn);
 
-	/** Получить указатель на пешку, которому принадлежит */
+	/** РџРѕР»СѓС‡РёС‚СЊ СѓРєР°Р·Р°С‚РµР»СЊ РЅР° РїРµС€РєСѓ, РєРѕС‚РѕСЂРѕРјСѓ РїСЂРёРЅР°РґР»РµР¶РёС‚ */
 	AArk_VausPawn* GetPawnPointer();
+	//-------------------------------------------
+
+
+
+	/* ---   Move Reaction   --- */
+
+	/** Р—Р°РїСѓСЃРє СЂРµР°РєС†РёРё РЅР° РїРµСЂРµРјРµС‰РµРЅРёРµ СЃ СѓС‡С‘С‚РѕРј РЅР°РїСЂР°РІР»РµРЅРёСЏ */
+	void MoveReaction(const float& iDirection);
+	//-------------------------------------------
+
+
+
+	/* ---   Move Reaction: Left   --- */
+
+	// FX СЃР»РµРІР°
+	UPROPERTY(EditAnywhere, Category = "Parameters|Move Reaction|Left")
+	UParticleSystem* LeftFX;
+
+	// NiagaraFX СЃР»РµРІР°
+	UPROPERTY(EditAnywhere, Category = "Parameters|Move Reaction|Left")
+	UNiagaraSystem* LeftNiagaraFX;
+
+	UPROPERTY(EditAnywhere, Category = "Parameters|Move Reaction|Left", meta = (DisplayName = "Rotation Correction"))
+	FRotator RotationCorrectionForLeftFX = FRotator(-90, 0, 0);
+
+	UPROPERTY(EditAnywhere, Category = "Parameters|Move Reaction|Left", meta = (DisplayName = "Scale 3D"))
+	FVector Scale3DForLeftFX = FVector(0.1f);
+	//-------------------------------------------
+
+
+
+	/* ---   Move Reaction: Right   --- */
+
+	// FX СЃРїСЂР°РІР°
+	UPROPERTY(EditAnywhere, Category = "Parameters|Move Reaction|Right")
+	UParticleSystem* RightFX;
+
+	// NiagaraFX СЃРїСЂР°РІР°
+	UPROPERTY(EditAnywhere, Category = "Parameters|Move Reaction|Right")
+	UNiagaraSystem* RightNiagaraFX;
+
+	UPROPERTY(EditAnywhere, Category = "Parameters|Move Reaction|Right", meta = (DisplayName = "Rotation Correction"))
+	FRotator RotationCorrectionForRightFX = FRotator(-90, 0, 0);
+
+	UPROPERTY(EditAnywhere, Category = "Parameters|Move Reaction|Right", meta = (DisplayName = "Scale 3D"))
+	FVector Scale3DForRightFX = FVector(0.1f);
 	//-------------------------------------------
 
 
@@ -91,14 +170,17 @@ private:
 
 	/* ---   Gift   --- */
 
-	// Базовая локация, полученный из VausMesh
+	// РЈРєР°Р·Р°С‚РµР»СЊ РЅР° РїРµС€РєСѓ, РєРѕС‚РѕСЂРѕРјСѓ РїСЂРёРЅР°РґР»РµР¶РёС‚
+	AArk_VausPawn* pVausPawn;
+
+	// Р‘Р°Р·РѕРІР°СЏ Р»РѕРєР°С†РёСЏ, РїРѕР»СѓС‡РµРЅРЅС‹Р№ РёР· VausMesh
 	FVector BaseScale3D = FVector(0.1f, 1.f, 0.4f);
 
-	// Указатель на пешку, которому принадлежит
-	AArk_VausPawn* pVausPawn;
+	// РџРѕР»РѕРІРёРЅР° СЂР°Р·РјРµСЂР° 
+	float BaseExtent_Y;
 
 	//
 
-	void UpdateSecondaryMeshLocation();
+	void UpdateSecondaryComponentsLocation();
 	//-------------------------------------------
 };

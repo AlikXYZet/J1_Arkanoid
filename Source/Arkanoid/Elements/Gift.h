@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+п»ї// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -45,19 +45,31 @@ public:
 
 	/* ---   Components   --- */
 
-	/** Меш визуализации Подарка */
+	/** РњРµС€ РІРёР·СѓР°Р»РёР·Р°С†РёРё РџРѕРґР°СЂРєР° */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* GiftMesh = nullptr;
 
-	/** Компонент передвижения Подарка */
+	/** РљРѕРјРїРѕРЅРµРЅС‚ РїРµСЂРµРґРІРёР¶РµРЅРёСЏ РџРѕРґР°СЂРєР° */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement;
 
+	/** РљРѕРјРїРѕРЅРµРЅС‚ РґР»СЏ Particle System */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UParticleSystemComponent* FXComponent = nullptr;
 
+	/** РљРѕРјРїРѕРЅРµРЅС‚ РґР»СЏ Niagara System */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UNiagaraComponent* NiagaraFXComponent = nullptr;
+	//-------------------------------------------
+
+
+
+protected:
+
+	/* ---   Base   --- */
+
+	/** РџРµСЂРµРѕРїСЂРµРґРµР»СЏРµРјРѕРµ СЃРѕР±СЃС‚РІРµРЅРЅРѕРµ СЃРѕР±С‹С‚РёРµ, РѕРїСЂРµРґРµР»СЏСЋС‰РµРµ РЅР°С‡Р°Р»Рѕ РёРіСЂС‹ РґР»СЏ СЌС‚РѕРіРѕ Р°РєС‚РµСЂР° */
+	virtual void BeginPlay() override;
 	//-------------------------------------------
 
 
@@ -66,25 +78,35 @@ public:
 
 	/* ---   Velocity   --- */
 
-	// Начальная (стартовая) скорость
+	// РќР°С‡Р°Р»СЊРЅР°СЏ (СЃС‚Р°СЂС‚РѕРІР°СЏ) СЃРєРѕСЂРѕСЃС‚СЊ
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters")
 	float StartingVelocity = 100.f;
-	//--------------------------------------------------------------------------------------
+	//-------------------------------------------
 
 
 
 	/* ---   Collision   --- */
 
-	/**	Событие, когда этот субъект перекрывается с другим */
+	/**	РЎРѕР±С‹С‚РёРµ, РєРѕРіРґР° СЌС‚РѕС‚ СЃСѓР±СЉРµРєС‚ РїРµСЂРµРєСЂС‹РІР°РµС‚СЃСЏ СЃ РґСЂСѓРіРёРј */
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
-	//--------------------------------------------------------------------------------------
+	//-------------------------------------------
 
 
 
 	/* ---   Reactions   --- */
 
-	/**	Реакция на подбор Пешкой */
+	/**	Р РµР°РєС†РёСЏ РЅР° РїРѕРґР±РѕСЂ РџРµС€РєРѕР№ */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Reactions", meta = (DisplayName = "Is Taken"))
 	void EventIsTaken(AArk_VausPawn* VausPawn);
-	//--------------------------------------------------------------------------------------
+	//-------------------------------------------
+
+
+
+private:
+
+	/* ---   FX   --- */
+
+	/** РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ FX: РЈР±СЂР°С‚СЊ РЅРµРёСЃРїРѕР»СЊР·СѓРµРјС‹Рµ FX-РєРѕРјРїРѕРЅРµРЅС‚С‹ */
+	void InitFXComponent();
+	//-------------------------------------------
 };

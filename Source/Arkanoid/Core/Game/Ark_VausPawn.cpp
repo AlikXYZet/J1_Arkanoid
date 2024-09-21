@@ -127,6 +127,9 @@ void AArk_VausPawn::MoveVaus(float iValue)
 	{
 		VausComponent->AddLocalOffset(FVector(0, lOffset_Y, 0));
 
+		if (pVausActor)
+			pVausActor->MoveReaction(lOffset_Y);
+
 		// Контроль спавна мяча в направлении движения
 		if (SpawnYaw < 0 && iValue > 0)
 		{

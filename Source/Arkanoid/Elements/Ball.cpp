@@ -7,8 +7,10 @@
 #include "GameFramework/KillZVolume.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Plugins:
+#include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 
 // Interaction:
@@ -74,6 +76,8 @@ void ABall::BeginPlay()
 {
 	Super::BeginPlay();
 
+	InitFXComponent();
+
 	RememberBaseVisual();
 }
 //--------------------------------------------------------------------------------------
@@ -120,6 +124,31 @@ void ABall::NotifyHit(
 			}
 		}
 	}
+
+
+
+	/* ---   Collision: FX   --- */
+
+	if (HitFX)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(
+			GetWorld(),
+			HitFX,
+			Hit.ImpactPoint,
+			Hit.ImpactNormal.Rotation() + RotationCorrectionForHitFX,
+			Scale3DForHitFX);
+	}
+
+	if (HitNiagaraFX)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			GetWorld(),
+			HitNiagaraFX,
+			Hit.ImpactPoint,
+			Hit.ImpactNormal.Rotation() + RotationCorrectionForHitFX,
+			Scale3DForHitFX);
+	}
+	//-------------------------------------------
 }
 
 void ABall::NotifyActorBeginOverlap(AActor* OtherActor)
@@ -189,6 +218,45 @@ void ABall::AddVelocity(float iAddValue)
 
 
 /* ---   Ball Mode: Materials and FX   --- */
+
+void ABall::InitFXComponent()
+{
+	// Флаг уничтожения компонента
+	bool bDestroy = true;
+
+	// FX
+	for (UParticleSystem* Data : ModeFX)
+	{
+		if (Data)
+		{
+			bDestroy = false;
+		}
+	}
+
+	if (bDestroy)
+	{
+		FXComponent->DestroyComponent();
+	}
+	//-------------------------------------------
+
+	// Сброс флага
+	bDestroy = true;
+
+	// FX Niagara
+	for (UNiagaraSystem* Data : ModeNiagaraFX)
+	{
+		if (Data)
+		{
+			bDestroy = false;
+		}
+	}
+
+	if (bDestroy)
+	{
+		NiagaraFXComponent->DestroyComponent();
+	}
+	//-------------------------------------------
+}
 
 void ABall::SetMode(EBallMode iMode)
 {

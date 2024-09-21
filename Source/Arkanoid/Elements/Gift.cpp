@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+п»ї// Fill out your copyright notice in the Description page of Project Settings.
 
 // Base:
 #include "Gift.h"
@@ -26,20 +26,20 @@
 AGift::AGift()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false; // Предварительно
+	PrimaryActorTick.bCanEverTick = false; // РџСЂРµРґРІР°СЂРёС‚РµР»СЊРЅРѕ
 
 
 
 	/* ---   Components   --- */
 
-	// Корневой компонент
+	// РљРѕСЂРЅРµРІРѕР№ РєРѕРјРїРѕРЅРµРЅС‚
 	GiftMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ball Mesh"));
 	RootComponent = GiftMesh;
 	GiftMesh->SetRelativeScale3D(FVector(0.2f));
 	GiftMesh->SetCastShadow(false);
 	GiftMesh->SetCollisionProfileName(TEXT("Trigger"));
 
-	// Контроль передвижения мяча
+	// РљРѕРЅС‚СЂРѕР»СЊ РїРµСЂРµРґРІРёР¶РµРЅРёСЏ РјСЏС‡Р°
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile Movement"));
 	ProjectileMovement->ProjectileGravityScale = 0.f;
 	ProjectileMovement->InitialSpeed = StartingVelocity;
@@ -53,6 +53,18 @@ AGift::AGift()
 	NiagaraFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("FX Niagara"));
 	NiagaraFXComponent->SetupAttachment(RootComponent);
 	//-------------------------------------------
+}
+//--------------------------------------------------------------------------------------
+
+
+
+/* ---   Base   --- */
+
+void AGift::BeginPlay()
+{
+	Super::BeginPlay();
+
+	InitFXComponent();
 }
 //--------------------------------------------------------------------------------------
 
@@ -79,6 +91,24 @@ void AGift::NotifyActorBeginOverlap(AActor* OtherActor)
 		EventIsTaken(lPawn);
 
 		Destroy();
+	}
+}
+//--------------------------------------------------------------------------------------
+
+
+
+/* ---   FX   --- */
+
+void AGift::InitFXComponent()
+{
+	if (FXComponent && !FXComponent->Template)
+	{
+		FXComponent->DestroyComponent();
+	}
+
+	if (NiagaraFXComponent && !NiagaraFXComponent->GetAsset())
+	{
+		NiagaraFXComponent->DestroyComponent();
 	}
 }
 //--------------------------------------------------------------------------------------

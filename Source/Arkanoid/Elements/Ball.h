@@ -64,9 +64,11 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement;
 
+	/** Компонент для Particle System */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UParticleSystemComponent* FXComponent = nullptr;
 
+	/** Компонент для Niagara System */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UNiagaraComponent* NiagaraFXComponent = nullptr;
 	//-------------------------------------------
@@ -79,7 +81,7 @@ protected:
 
 	/** Переопределяемое собственное событие, определяющее начало игры для этого актера */
 	virtual void BeginPlay() override;
-	//--------------------------------------------------------------------------------------
+	//-------------------------------------------
 
 
 
@@ -88,17 +90,33 @@ public:
 	/* ---   Velocity   --- */
 
 	// Начальная (стартовая) скорость
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters", meta = (ClampMin = "1", UIMin = "1"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters|Velocity", meta = (ClampMin = "1", UIMin = "1"))
 	float StartingVelocity = 500.f;
 
 	// Минимальная скорость
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters", meta = (ClampMin = "1", UIMin = "1"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters|Velocity", meta = (ClampMin = "1", UIMin = "1"))
 	float MinVelocity = 50.f;
-	//--------------------------------------------------------------------------------------
+	//-------------------------------------------
 
 
 
 	/* ---   Collision   --- */
+
+	// FX столкновения Мяча
+	UPROPERTY(EditAnywhere, Category = "Parameters|Hit")
+	UParticleSystem* HitFX;
+
+	// NiagaraFX столкновения Мяча
+	UPROPERTY(EditAnywhere, Category = "Parameters|Hit")
+	UNiagaraSystem* HitNiagaraFX;
+
+	UPROPERTY(EditAnywhere, Category = "Parameters|Hit", meta = (DisplayName = "Rotation Correction"))
+	FRotator RotationCorrectionForHitFX = FRotator(-90, 0, 0);
+
+	UPROPERTY(EditAnywhere, Category = "Parameters|Hit", meta = (DisplayName = "Scale 3D"))
+	FVector Scale3DForHitFX = FVector(0.1f);
+
+	//
 
 	/**	Событие, когда этот субъект соприкасается с другим */
 	virtual void NotifyHit(
@@ -116,7 +134,7 @@ public:
 
 	/** Вызывается, когда этот субъект явно уничтожается во время игрового процесса или в редакторе, но не вызывается во время потоковой передачи уровней или завершения игрового процесса */
 	virtual void Destroyed() override;
-	//--------------------------------------------------------------------------------------
+	//-------------------------------------------
 
 
 
@@ -136,15 +154,15 @@ public:
 	/* ---   Ball Mode: Materials and FX   --- */
 
 	// Материалы режимов мяча
-	UPROPERTY(EditAnywhere, Category = "Parameters")
+	UPROPERTY(EditAnywhere, Category = "Parameters|Mode")
 	UMaterialInterface* ModeMaterials[EBallMode::Base];
 
-	// Материалы режимов мяча
-	UPROPERTY(EditAnywhere, Category = "Parameters")
+	// FX режимов мяча
+	UPROPERTY(EditAnywhere, Category = "Parameters|Mode")
 	UParticleSystem* ModeFX[EBallMode::Base];
 
-	// Материалы режимов мяча
-	UPROPERTY(EditAnywhere, Category = "Parameters")
+	// NiagaraFX режимов мяча
+	UPROPERTY(EditAnywhere, Category = "Parameters|Mode")
 	UNiagaraSystem* ModeNiagaraFX[EBallMode::Base];
 
 	//
@@ -182,6 +200,9 @@ private:
 	UNiagaraSystem* BaseNiagara = nullptr;
 
 	//
+
+	/** Инициализация FX: Убрать неиспользуемые FX-компоненты */
+	void InitFXComponent();
 
 	/** Запомнить базовый визуал, установленный в компонентах Мяча */
 	void RememberBaseVisual();
