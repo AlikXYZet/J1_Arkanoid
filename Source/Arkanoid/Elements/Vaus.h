@@ -154,6 +154,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Parameters|Move Reaction|Left")
 	UNiagaraSystem* LeftNiagaraFX;
 
+	// Корректировка ротации FX слева
 	UPROPERTY(EditAnywhere, Category = "Parameters|Move Reaction|Left", meta = (DisplayName = "Rotation Correction"))
 	FRotator RotationCorrectionForLeftFX = FRotator(-90, 0, 0);
 
@@ -176,6 +177,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Parameters|Move Reaction|Right")
 	UNiagaraSystem* RightNiagaraFX;
 
+	// Корректировка ротации FX справа
 	UPROPERTY(EditAnywhere, Category = "Parameters|Move Reaction|Right", meta = (DisplayName = "Rotation Correction"))
 	FRotator RotationCorrectionForRightFX = FRotator(-90, 0, 0);
 

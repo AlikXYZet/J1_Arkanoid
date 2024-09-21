@@ -110,9 +110,11 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Parameters|Hit")
 	UNiagaraSystem* HitNiagaraFX;
 
+	// Корректировка ротации FX
 	UPROPERTY(EditAnywhere, Category = "Parameters|Hit", meta = (DisplayName = "Rotation Correction"))
 	FRotator RotationCorrectionForHitFX = FRotator(-90, 0, 0);
 
+	// Корректировка Масштабирования FX
 	UPROPERTY(EditAnywhere, Category = "Parameters|Hit", meta = (DisplayName = "Scale 3D"))
 	FVector Scale3DForHitFX = FVector(0.1f);
 
