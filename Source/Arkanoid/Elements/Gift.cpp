@@ -50,7 +50,7 @@ AGift::AGift()
 	FXComponent->SetupAttachment(RootComponent);
 
 	// FX Niagara
-	NiagaraFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("FX Niagara"));
+	NiagaraFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara FX"));
 	NiagaraFXComponent->SetupAttachment(RootComponent);
 	//-------------------------------------------
 }

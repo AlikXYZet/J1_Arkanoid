@@ -60,6 +60,16 @@ AVaus::AVaus()
 		FRotator(0.f, -90.f, 0.f),
 		FVector(0.f, -5.f, 0.f),
 		FVector(0.1f)));
+
+	// FX
+	LeftFXComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Left FX"));
+	LeftFXComponent->SetupAttachment(LeftRoot);
+	LeftFXComponent->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
+
+	// FX Niagara
+	LeftNiagaraFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Left Niagara FX"));
+	LeftNiagaraFXComponent->SetupAttachment(LeftRoot);
+	LeftNiagaraFXComponent->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
 	//-------------------------------------------
 
 
@@ -82,6 +92,16 @@ AVaus::AVaus()
 		FRotator(0.f, 90.f, 0.f),
 		FVector(0.f, 5.f, 0.f),
 		FVector(0.1f)));
+
+	// FX
+	RightFXComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Right FX"));
+	RightFXComponent->SetupAttachment(RightRoot);
+	RightFXComponent->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
+
+	// FX Niagara
+	RightNiagaraFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Right Niagara FX"));
+	RightNiagaraFXComponent->SetupAttachment(RightRoot);
+	RightNiagaraFXComponent->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 	//-------------------------------------------
 }
 //--------------------------------------------------------------------------------------
@@ -95,6 +115,8 @@ void AVaus::BeginPlay()
 	Super::BeginPlay();
 
 	BaseScale3D = VausMesh->GetRelativeScale3D();
+
+	InitFXComponent();
 }
 //--------------------------------------------------------------------------------------
 
@@ -160,12 +182,16 @@ void AVaus::MoveReaction(const float& iDirection)
 	{
 		if (iDirection > 0)
 		{
+			EventToRight();
+
 			if (LeftFX)
 			{
 				UGameplayStatics::SpawnEmitterAtLocation(
 					GetWorld(),
 					LeftFX,
-					ArrowLeftFX->GetComponentTransform());
+					ArrowLeftFX->GetComponentLocation(),
+					ArrowLeftFX->GetComponentRotation() + RotationCorrectionForLeftFX,
+					ArrowLeftFX->GetComponentScale());
 			}
 
 			if (LeftNiagaraFX)
@@ -174,18 +200,27 @@ void AVaus::MoveReaction(const float& iDirection)
 					GetWorld(),
 					LeftNiagaraFX,
 					ArrowLeftFX->GetComponentLocation(),
-					ArrowLeftFX->GetComponentRotation() + FRotator(-90, 0, 0),
+					ArrowLeftFX->GetComponentRotation() + RotationCorrectionForLeftFX,
 					ArrowLeftFX->GetComponentScale());
+			}
+
+			if (LeftNiagaraFXComponent)
+			{
+				LeftNiagaraFXComponent->ResetSystem();
 			}
 		}
 		else
 		{
+			EventToLeft();
+
 			if (RightFX)
 			{
 				UGameplayStatics::SpawnEmitterAtLocation(
 					GetWorld(),
 					RightFX,
-					ArrowRightFX->GetComponentTransform());
+					ArrowRightFX->GetComponentLocation(),
+					ArrowRightFX->GetComponentRotation() + RotationCorrectionForRightFX,
+					ArrowRightFX->GetComponentScale());
 			}
 
 			if (RightNiagaraFX)
@@ -194,10 +229,61 @@ void AVaus::MoveReaction(const float& iDirection)
 					GetWorld(),
 					RightNiagaraFX,
 					ArrowRightFX->GetComponentLocation(),
-					ArrowRightFX->GetComponentRotation() + FRotator(-90, 0, 0),
+					ArrowRightFX->GetComponentRotation() + RotationCorrectionForRightFX,
 					ArrowRightFX->GetComponentScale());
+			}
+
+			if (RightNiagaraFXComponent)
+			{
+				RightNiagaraFXComponent->ResetSystem();
 			}
 		}
 	}
+}
+//--------------------------------------------------------------------------------------
+
+
+
+/* ---   FX   --- */
+
+void AVaus::InitFXComponent()
+{
+	/* ---   Components: Left   --- */
+
+	if (!LeftFX && !LeftNiagaraFX)
+	{
+		ArrowLeftFX->DestroyComponent();
+	}
+
+	if (LeftFXComponent && !LeftFXComponent->Template)
+	{
+		LeftFXComponent->DestroyComponent();
+	}
+
+	if (LeftNiagaraFXComponent && !LeftNiagaraFXComponent->GetAsset())
+	{
+		LeftNiagaraFXComponent->DestroyComponent();
+	}
+	//-------------------------------------------
+
+
+
+	/* ---   Components: Right   --- */
+
+	if (!RightFX && !RightNiagaraFX)
+	{
+		ArrowRightFX->DestroyComponent();
+	}
+
+	if (RightFXComponent && !RightFXComponent->Template)
+	{
+		RightFXComponent->DestroyComponent();
+	}
+
+	if (RightNiagaraFXComponent && !RightNiagaraFXComponent->GetAsset())
+	{
+		RightNiagaraFXComponent->DestroyComponent();
+	}
+	//-------------------------------------------
 }
 //--------------------------------------------------------------------------------------

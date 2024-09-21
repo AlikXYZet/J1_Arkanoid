@@ -172,7 +172,9 @@ void AArk_VausPawn::CalculateMoveLimit_Y()
 	{
 		FVector lOrigin;
 		FVector lExtent;
-		pVausActor->GetActorBounds(false, lOrigin, lExtent);
+
+		// Получить размер Актора: Только компоненты с колизией
+		pVausActor->GetActorBounds(true, lOrigin, lExtent);
 
 		CurrentMoveLimit_Y = MoveLimit_Y - lExtent.Y;
 

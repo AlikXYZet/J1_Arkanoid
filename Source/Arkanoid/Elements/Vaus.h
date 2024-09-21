@@ -64,6 +64,14 @@ public:
 	/** Вектор с Трансформацией для FX-реакции слева */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Left", meta = (AllowPrivateAccess = "true"))
 	UArrowComponent* ArrowLeftFX = nullptr;
+
+	/** Компонент слева для Particle System */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Left", meta = (AllowPrivateAccess = "true"))
+	UParticleSystemComponent* LeftFXComponent = nullptr;
+
+	/** Компонент слева для Niagara System */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Left", meta = (AllowPrivateAccess = "true"))
+	UNiagaraComponent* LeftNiagaraFXComponent = nullptr;
 	//-------------------------------------------
 
 
@@ -81,6 +89,14 @@ public:
 	/** Вектор с Трансформацией для FX-реакции справа */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Right", meta = (AllowPrivateAccess = "true"))
 	UArrowComponent* ArrowRightFX = nullptr;
+
+	/** Компонент справа для Particle System */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Right", meta = (AllowPrivateAccess = "true"))
+	UParticleSystemComponent* RightFXComponent = nullptr;
+
+	/** Компонент справа для Niagara System */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Right", meta = (AllowPrivateAccess = "true"))
+	UNiagaraComponent* RightNiagaraFXComponent = nullptr;
 	//-------------------------------------------
 
 
@@ -141,8 +157,11 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Parameters|Move Reaction|Left", meta = (DisplayName = "Rotation Correction"))
 	FRotator RotationCorrectionForLeftFX = FRotator(-90, 0, 0);
 
-	UPROPERTY(EditAnywhere, Category = "Parameters|Move Reaction|Left", meta = (DisplayName = "Scale 3D"))
-	FVector Scale3DForLeftFX = FVector(0.1f);
+	//
+
+	/**	Реакция при движении вправо */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Move Reactions", meta = (DisplayName = "To Right"))
+	void EventToRight();
 	//-------------------------------------------
 
 
@@ -160,8 +179,11 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Parameters|Move Reaction|Right", meta = (DisplayName = "Rotation Correction"))
 	FRotator RotationCorrectionForRightFX = FRotator(-90, 0, 0);
 
-	UPROPERTY(EditAnywhere, Category = "Parameters|Move Reaction|Right", meta = (DisplayName = "Scale 3D"))
-	FVector Scale3DForRightFX = FVector(0.1f);
+	//
+
+	/**	Реакция при движении влево */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Move Reactions", meta = (DisplayName = "To Left"))
+	void EventToLeft();
 	//-------------------------------------------
 
 
@@ -182,5 +204,13 @@ private:
 	//
 
 	void UpdateSecondaryComponentsLocation();
+	//-------------------------------------------
+
+
+
+	/* ---   FX   --- */
+
+	/** Инициализация FX: Убрать неиспользуемые FX-компоненты */
+	void InitFXComponent();
 	//-------------------------------------------
 };
