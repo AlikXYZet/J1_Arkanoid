@@ -221,6 +221,11 @@ void ABall::AddVelocity(float iAddValue)
 
 void ABall::InitFXComponent()
 {
+	// Проверка инициализации Меша
+	if (!BallMesh)
+		UE_LOG(LogTemp, Error, TEXT("ABall::InitFXComponent: BallMesh is EMPTY"));
+	//-------------------------------------------
+
 	// Флаг уничтожения компонента
 	bool bDestroy = true;
 
@@ -282,14 +287,22 @@ void ABall::SetMode(EBallMode iMode)
 	if (CurrentMode == EBallMode::Base)
 	{
 		BallMesh->SetMaterial(0, BaseMaterials);
-		FXComponent->SetTemplate(BaseParticle);
-		NiagaraFXComponent->SetAsset(BaseNiagara);
+
+		if (FXComponent)
+			FXComponent->SetTemplate(BaseParticle);
+
+		if (NiagaraFXComponent)
+			NiagaraFXComponent->SetAsset(BaseNiagara);
 	}
 	else
 	{
 		BallMesh->SetMaterial(0, ModeMaterials[uint8(CurrentMode)]);
-		FXComponent->SetTemplate(ModeFX[uint8(CurrentMode)]);
-		NiagaraFXComponent->SetAsset(ModeNiagaraFX[uint8(CurrentMode)]);
+
+		if (FXComponent)
+			FXComponent->SetTemplate(ModeFX[uint8(CurrentMode)]);
+
+		if (NiagaraFXComponent)
+			NiagaraFXComponent->SetAsset(ModeNiagaraFX[uint8(CurrentMode)]);
 	}
 }
 
@@ -303,7 +316,11 @@ void ABall::SetCollisionResponseToWorldDynamic(ECollisionResponse iECR)
 void ABall::RememberBaseVisual()
 {
 	BaseMaterials = BallMesh->GetMaterial(0);
-	BaseParticle = FXComponent->Template;
-	BaseNiagara = NiagaraFXComponent->GetAsset();
+
+	if (FXComponent)
+		BaseParticle = FXComponent->Template;
+
+	if (NiagaraFXComponent)
+		BaseNiagara = NiagaraFXComponent->GetAsset();
 }
 //--------------------------------------------------------------------------------------

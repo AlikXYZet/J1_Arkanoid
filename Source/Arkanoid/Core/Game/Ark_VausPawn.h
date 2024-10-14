@@ -183,7 +183,7 @@ private:
 	AArk_GameStateBase* CurrentArkGameState = nullptr;
 
 	// Базовая локация, полученный из VausMesh
-	FVector BaseLocation = FVector(-460.f, 0.f, 45.f);
+	FVector BaseLocation = FVector(-460.f, 0.f, 25.f);
 
 	//
 

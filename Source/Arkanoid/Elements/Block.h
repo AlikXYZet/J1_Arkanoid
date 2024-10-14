@@ -84,7 +84,7 @@ public:
 
 	// Массив материалов для каждого Уровня жизни блока
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters")
-	TArray<UMaterial*> LivesMaterials;
+	TArray<UMaterialInterface*> LivesMaterials;
 
 	//
 

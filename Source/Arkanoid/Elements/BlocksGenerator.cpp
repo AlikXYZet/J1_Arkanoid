@@ -112,12 +112,12 @@ void ABlocksGenerator::CheckData(const ABlock* ipBlock)
 {
 	if (BlockSize.IsZero())
 	{
-		BlockSize = ipBlock->BlockMesh->GetRelativeScale3D() * 100.f;
+		BlockSize = ipBlock->BlockMesh->Bounds.BoxExtent * 2;
 
 		PointOffset = FVector(
 			0,
 			(BlockSize.Y + Gap.Y) * (NumberAlongAxes.Y - 1) / 2,
-			BlockSize.Z / 2);
+			BlockSize.Z);
 	}
 }
 
