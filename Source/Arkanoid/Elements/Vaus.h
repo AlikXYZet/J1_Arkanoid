@@ -45,7 +45,8 @@ public:
 	/* ---   Components   --- */
 
 	/** Меш визуализации каретки */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components,
+		meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* VausMesh = nullptr;
 	//-------------------------------------------
 
@@ -54,23 +55,28 @@ public:
 	/* ---   Components: Left   --- */
 
 	/** Левый корневой компонент */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Left", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Left",
+		meta = (AllowPrivateAccess = "true"))
 	USceneComponent* LeftRoot = nullptr;
 
 	/** Меш визуализации каретки */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Left", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Left",
+		meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* LeftMesh = nullptr;
 
 	/** Вектор с Трансформацией для FX-реакции слева */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Left", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Left",
+		meta = (AllowPrivateAccess = "true"))
 	UArrowComponent* ArrowLeftFX = nullptr;
 
 	/** Компонент слева для Particle System */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Left", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Left",
+		meta = (AllowPrivateAccess = "true"))
 	UParticleSystemComponent* LeftFXComponent = nullptr;
 
 	/** Компонент слева для Niagara System */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Left", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Left",
+		meta = (AllowPrivateAccess = "true"))
 	UNiagaraComponent* LeftNiagaraFXComponent = nullptr;
 	//-------------------------------------------
 
@@ -79,23 +85,28 @@ public:
 	/* ---   Components: Right   --- */
 
 	/** Правый корневой компонент */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Right", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Right",
+		meta = (AllowPrivateAccess = "true"))
 	USceneComponent* RightRoot = nullptr;
 
 	/** Меш визуализации каретки */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Right", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Right",
+		meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* RightMesh = nullptr;
 
 	/** Вектор с Трансформацией для FX-реакции справа */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Right", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Right",
+		meta = (AllowPrivateAccess = "true"))
 	UArrowComponent* ArrowRightFX = nullptr;
 
 	/** Компонент справа для Particle System */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Right", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Right",
+		meta = (AllowPrivateAccess = "true"))
 	UParticleSystemComponent* RightFXComponent = nullptr;
 
 	/** Компонент справа для Niagara System */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Right", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Right",
+		meta = (AllowPrivateAccess = "true"))
 	UNiagaraComponent* RightNiagaraFXComponent = nullptr;
 	//-------------------------------------------
 
@@ -116,7 +127,8 @@ public:
 	/* ---   Gift   --- */
 
 	// Минимальная ширина
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters", meta = (ClampMin = "0.1", UIMin = "0.1"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters",
+		meta = (ClampMin = "0.1", UIMin = "0.1"))
 	float MinWidth = 0.5f;
 
 	//
@@ -155,13 +167,15 @@ public:
 	UNiagaraSystem* LeftNiagaraFX;
 
 	// Корректировка ротации FX слева
-	UPROPERTY(EditAnywhere, Category = "Parameters|Move Reaction|Left", meta = (DisplayName = "Rotation Correction"))
+	UPROPERTY(EditAnywhere, Category = "Parameters|Move Reaction|Left",
+		meta = (DisplayName = "Rotation Correction"))
 	FRotator RotationCorrectionForLeftFX = FRotator(-90, 0, 0);
 
 	//
 
 	/**	Реакция при движении вправо */
-	UFUNCTION(BlueprintImplementableEvent, Category = "Move Reactions", meta = (DisplayName = "To Right"))
+	UFUNCTION(BlueprintImplementableEvent, Category = "Move Reactions",
+		meta = (DisplayName = "To Right"))
 	void EventToRight();
 	//-------------------------------------------
 
@@ -178,13 +192,15 @@ public:
 	UNiagaraSystem* RightNiagaraFX;
 
 	// Корректировка ротации FX справа
-	UPROPERTY(EditAnywhere, Category = "Parameters|Move Reaction|Right", meta = (DisplayName = "Rotation Correction"))
+	UPROPERTY(EditAnywhere, Category = "Parameters|Move Reaction|Right",
+		meta = (DisplayName = "Rotation Correction"))
 	FRotator RotationCorrectionForRightFX = FRotator(-90, 0, 0);
 
 	//
 
 	/**	Реакция при движении влево */
-	UFUNCTION(BlueprintImplementableEvent, Category = "Move Reactions", meta = (DisplayName = "To Left"))
+	UFUNCTION(BlueprintImplementableEvent, Category = "Move Reactions",
+		meta = (DisplayName = "To Left"))
 	void EventToLeft();
 	//-------------------------------------------
 

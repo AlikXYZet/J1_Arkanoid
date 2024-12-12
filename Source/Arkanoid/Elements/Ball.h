@@ -57,19 +57,23 @@ public:
 	/* ---   Components   --- */
 
 	/** Меш визуализации мяча */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components,
+		meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* BallMesh = nullptr;
 
 	/** Компонент передвижения мяча */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components,
+		meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement;
 
 	/** Компонент для Particle System */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components,
+		meta = (AllowPrivateAccess = "true"))
 	UParticleSystemComponent* FXComponent = nullptr;
 
 	/** Компонент для Niagara System */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components,
+		meta = (AllowPrivateAccess = "true"))
 	UNiagaraComponent* NiagaraFXComponent = nullptr;
 	//-------------------------------------------
 
@@ -81,6 +85,11 @@ protected:
 
 	/** Переопределяемое собственное событие, определяющее начало игры для этого актера */
 	virtual void BeginPlay() override;
+
+	/** Вызывается, когда этот субъект явно уничтожается во время игрового процесса или в редакторе,
+	* но не вызывается во время потоковой передачи уровней или завершения игрового процесса
+	*/
+	virtual void Destroyed() override;
 	//-------------------------------------------
 
 
@@ -90,11 +99,13 @@ public:
 	/* ---   Velocity   --- */
 
 	// Начальная (стартовая) скорость
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters|Velocity", meta = (ClampMin = "1", UIMin = "1"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters|Velocity",
+		meta = (ClampMin = "1", UIMin = "1"))
 	float StartingVelocity = 500.f;
 
 	// Минимальная скорость
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters|Velocity", meta = (ClampMin = "1", UIMin = "1"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters|Velocity",
+		meta = (ClampMin = "1", UIMin = "1"))
 	float MinVelocity = 50.f;
 	//-------------------------------------------
 
@@ -111,11 +122,13 @@ public:
 	UNiagaraSystem* HitNiagaraFX;
 
 	// Корректировка ротации FX
-	UPROPERTY(EditAnywhere, Category = "Parameters|Hit", meta = (DisplayName = "Rotation Correction"))
+	UPROPERTY(EditAnywhere, Category = "Parameters|Hit",
+		meta = (DisplayName = "Rotation Correction"))
 	FRotator RotationCorrectionForHitFX = FRotator(-90, 0, 0);
 
 	// Корректировка Масштабирования FX
-	UPROPERTY(EditAnywhere, Category = "Parameters|Hit", meta = (DisplayName = "Scale 3D"))
+	UPROPERTY(EditAnywhere, Category = "Parameters|Hit",
+		meta = (DisplayName = "Scale 3D"))
 	FVector Scale3DForHitFX = FVector(0.1f);
 
 	//
@@ -133,9 +146,6 @@ public:
 
 	/**	Событие, когда этот субъект перекрывается с другим */
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
-
-	/** Вызывается, когда этот субъект явно уничтожается во время игрового процесса или в редакторе, но не вызывается во время потоковой передачи уровней или завершения игрового процесса */
-	virtual void Destroyed() override;
 	//-------------------------------------------
 
 

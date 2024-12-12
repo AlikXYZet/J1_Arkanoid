@@ -4,7 +4,7 @@
 
 // Base:
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "GeneratorBase.h"
 
 // C++:
 #include <functional> // Для предиката
@@ -40,14 +40,14 @@ enum struct EGenerationType : uint8
 	Chess,
 	// Плотная компоновка (полное заполнение)
 	Tight,
-	// Рандомная компановка из списка
+	// Рандомная компоновка из списка
 	Random,
 };
 
 
 
 UCLASS()
-class ARKANOID_API ABlocksGenerator : public AActor
+class ARKANOID_API ABlocksGenerator : public AGeneratorBase
 {
 	GENERATED_BODY()
 
@@ -75,6 +75,13 @@ public:
 
 	/* ---   Generator   --- */
 
+	// Тег верификации для определения компонента, созданного текущим генератором
+	FName VerificationTag = FName(GetNameSafe(this));
+
+	// Перегенерировать при старте уровня?
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Generator")
+	bool RegenerateAtStartup = true;
+
 	// Тип генерации
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Generator")
 	EGenerationType GenerationType;
@@ -88,8 +95,19 @@ public:
 	FVector Gap = { 10.f, 10.f, 2.5f };
 
 	// Количество вдоль осей
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Generator", meta = (ClampMin = "1", UIMin = "1"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Generator",
+		meta = (ClampMin = "1", UIMin = "1"))
 	FIndex2D NumberAlongAxes = { 10, 10 };
+
+	//
+
+	/** Перегенерировать (перезапустить) данный Генератор */
+	UFUNCTION(BlueprintCallable, CallInEditor, Category = "Generator")
+	void ReGenerate();
+
+	/** Удалить все блоки */
+	UFUNCTION(BlueprintCallable, CallInEditor, Category = "Generator")
+	void DeleteAllBlocks();
 	//-------------------------------------------
 
 
@@ -116,7 +134,7 @@ private:
 	void CreateBlock(const FIndex2D& iXY);
 
 	/** Проверить данные, при необходимости обновляет их по актору */
-	void CheckData(const ABlock* ipBlock);
+	void CheckGeneratorData(const ABlock* ipBlock);
 
 	/** Получить локацию блока с указанным индексом матрицы */
 	FVector GetLocationForBlock(const FIndex2D& iXY) const;

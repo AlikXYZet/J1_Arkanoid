@@ -3,8 +3,11 @@
 // Base:
 #include "BlocksGenerator.h"
 
+// UE:
+#include "Kismet/GameplayStatics.h"
+
 // Interaction:
-#include "Block.h"
+#include "Arkanoid/Elements/Block.h"
 //--------------------------------------------------------------------------------------
 
 
@@ -28,18 +31,31 @@ void ABlocksGenerator::BeginPlay()
 {
 	Super::BeginPlay();
 
-
-
-	/* ---   Generator   --- */
-
-	StartGenerator();
-	//-------------------------------------------
+	if (RegenerateAtStartup)
+	{
+		ReGenerate();
+	}
 }
 //--------------------------------------------------------------------------------------
 
 
 
 /* ---   Generator   --- */
+
+void ABlocksGenerator::ReGenerate()
+{
+	DeleteAllBlocks();
+	StartGenerator();
+}
+
+void ABlocksGenerator::DeleteAllBlocks()
+{
+	for (auto& lBlock : GetAllActors<ABlock>(VerificationTag))
+	{
+		lBlock->Destroy();
+	}
+	BlockSize = FVector::ZeroVector;
+}
 
 void ABlocksGenerator::StartGenerator()
 {
@@ -103,12 +119,23 @@ void ABlocksGenerator::CreateBlock(const FIndex2D& iXY)
 {
 	ABlock* lBlock = GetWorld()->SpawnActor<ABlock>(BlockType.Get(), FTransform());
 
-	CheckData(lBlock);
+	if (lBlock)
+	{
+		CheckGeneratorData(lBlock);
 
-	lBlock->SetActorLocation(GetLocationForBlock(iXY));
+		lBlock->SetActorLocation(GetLocationForBlock(iXY));
+		lBlock->Tags.Add(VerificationTag);
+
+		lBlock->Init();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("'%s'::CreateBlock: lBlock is NOT"),
+			*GetNameSafe(this));
+	}
 }
 
-void ABlocksGenerator::CheckData(const ABlock* ipBlock)
+void ABlocksGenerator::CheckGeneratorData(const ABlock* ipBlock)
 {
 	if (BlockSize.IsZero())
 	{

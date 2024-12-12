@@ -80,6 +80,12 @@ void ABall::BeginPlay()
 
 	RememberBaseVisual();
 }
+
+void ABall::Destroyed()
+{
+	// PS: В нашем случае, здесь логику лучше не прописывать, ибо она вызывается даже в Конструкторе
+	Super::Destroyed();
+}
 //--------------------------------------------------------------------------------------
 
 
@@ -157,6 +163,11 @@ void ABall::NotifyActorBeginOverlap(AActor* OtherActor)
 
 	if (Cast<AKillZVolume>(OtherActor))
 	{
+		if (AArk_GameStateBase* lGameState = GetWorld()->GetGameState<AArk_GameStateBase>())
+		{
+			lGameState->CheckAllBallsCounter();
+		}
+
 		Destroy();
 	}
 
@@ -167,16 +178,6 @@ void ABall::NotifyActorBeginOverlap(AActor* OtherActor)
 			lHitBlock->Destroy();
 		}
 	}
-}
-
-void ABall::Destroyed()
-{
-	if (AArk_GameStateBase* lGameState = GetWorld()->GetGameState<AArk_GameStateBase>())
-	{
-		lGameState->CheckAllBallsCounter();
-	}
-
-	Super::Destroyed();
 }
 //--------------------------------------------------------------------------------------
 
@@ -223,7 +224,8 @@ void ABall::InitFXComponent()
 {
 	// Проверка инициализации Меша
 	if (!BallMesh)
-		UE_LOG(LogTemp, Error, TEXT("ABall::InitFXComponent: BallMesh is EMPTY"));
+		UE_LOG(LogTemp, Error, TEXT("'%s'::InitFXComponent: BallMesh is NOT"),
+			*GetNameSafe(this));
 	//-------------------------------------------
 
 	// Флаг уничтожения компонента

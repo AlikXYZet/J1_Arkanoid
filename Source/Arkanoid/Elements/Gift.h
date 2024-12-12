@@ -46,19 +46,23 @@ public:
 	/* ---   Components   --- */
 
 	/** Меш визуализации Подарка */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components,
+		meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* GiftMesh = nullptr;
 
 	/** Компонент передвижения Подарка */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components,
+		meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement;
 
 	/** Компонент для Particle System */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components,
+		meta = (AllowPrivateAccess = "true"))
 	UParticleSystemComponent* FXComponent = nullptr;
 
 	/** Компонент для Niagara System */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components,
+		meta = (AllowPrivateAccess = "true"))
 	UNiagaraComponent* NiagaraFXComponent = nullptr;
 	//-------------------------------------------
 
@@ -96,7 +100,8 @@ public:
 	/* ---   Reactions   --- */
 
 	/**	Реакция на подбор Пешкой */
-	UFUNCTION(BlueprintImplementableEvent, Category = "Reactions", meta = (DisplayName = "Is Taken"))
+	UFUNCTION(BlueprintImplementableEvent, Category = "Reactions",
+		meta = (DisplayName = "Is Taken"))
 	void EventIsTaken(AArk_VausPawn* VausPawn);
 	//-------------------------------------------
 

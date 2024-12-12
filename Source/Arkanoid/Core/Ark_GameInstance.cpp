@@ -55,7 +55,8 @@ void UArk_GameInstance::SaveGameData(const FGameData& iGameData) const
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("UArk_GameInstance::SaveGameData: SaveGame is NOT"));
+		UE_LOG(LogTemp, Error, TEXT("'%s'::SaveGameData: SaveGame is NOT"),
+			*GetNameSafe(this));
 	}
 }
 
@@ -67,7 +68,8 @@ FGameData UArk_GameInstance::LoadGameData() const
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("UArk_GameInstance::SaveGameData: SaveGame is NOT"));
+		UE_LOG(LogTemp, Error, TEXT("'%s'::LoadGameData: SaveGame is NOT"),
+			*GetNameSafe(this));
 	}
 
 	return FGameData::Empty;
@@ -121,19 +123,22 @@ void UArk_GameInstance::LevelsControlInit()
 				else
 				{
 					UE_LOG(LogTemp, Warning,
-						TEXT("AArk_GameStateBase::Init: Map in Row #%d from Table is NOT configured"),
-						i + 1);
+						TEXT("'%s'::LevelsControlInit: Map in Row #%d from Table is NOT configured"),
+						i + 1,
+						*GetNameSafe(this));
 				}
 			}
 		}
 	}
 	else if (!LevelTable)
 	{
-		UE_LOG(LogTemp, Error, TEXT("AArk_GameStateBase::Init: LevelTable is NOT"));
+		UE_LOG(LogTemp, Error, TEXT("'%s'::LevelsControlInit: LevelTable is NOT"),
+			*GetNameSafe(this));
 	}
 	else if (LevelTable->GetRowStruct() != FLevelTableRow::StaticStruct())
 	{
-		UE_LOG(LogTemp, Error, TEXT("AArk_GameStateBase::Init: LevelTable structure is NOT an FLevelTableRow"));
+		UE_LOG(LogTemp, Error, TEXT("'%s'::LevelsControlInit: LevelTable structure is NOT an FLevelTableRow"),
+			*GetNameSafe(this));
 	}
 }
 
@@ -146,7 +151,9 @@ void UArk_GameInstance::ToNewGame(const int32 iSelect)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("AArk_GameStateBase::ToNewGame: LevelsInOrder[%d] is NOT Valid"), iSelect);
+		UE_LOG(LogTemp, Error, TEXT("'%s'::ToNewGame: LevelsInOrder[%d] is NOT Valid"),
+			iSelect,
+			*GetNameSafe(this));
 	}
 }
 
@@ -167,7 +174,8 @@ void UArk_GameInstance::ToNextLevel()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("AArk_GameStateBase::ToNextLevel: LevelsInOrder[0] is NOT Valid"));
+		UE_LOG(LogTemp, Error, TEXT("'%s'::ToNextLevel: LevelsInOrder[0] is NOT Valid"),
+			*GetNameSafe(this));
 	}
 }
 
@@ -184,7 +192,9 @@ void UArk_GameInstance::ToSelectedLevel(const int32& iSelect)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("AArk_GameStateBase::ToSelectedLevel: LevelsInOrder[%d] is NOT Valid"), iSelect);
+		UE_LOG(LogTemp, Error, TEXT("'%s'::ToSelectedLevel: LevelsInOrder[%d] is NOT Valid"),
+			iSelect,
+			*GetNameSafe(this));
 	}
 }
 //--------------------------------------------------------------------------------------

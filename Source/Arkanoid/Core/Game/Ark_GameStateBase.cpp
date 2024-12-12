@@ -84,7 +84,8 @@ void AArk_GameStateBase::CheckAllBallsCounter()
 	}
 	else if (!CurrentVausPawn)
 	{
-		UE_LOG(LogTemp, Error, TEXT("AArk_GameStateBase::CheckAllBallsCounter: CurrentVausPawn is NOT"));
+		UE_LOG(LogTemp, Error, TEXT("'%s'::CheckAllBallsCounter: CurrentVausPawn is NOT"),
+			*GetNameSafe(this));
 	}
 }
 
@@ -146,7 +147,8 @@ void AArk_GameStateBase::Init()
 
 	if (!CurrentSavingInstance)
 	{
-		UE_LOG(LogTemp, Error, TEXT("AArk_GameStateBase::Init: CurrentSavingInstance is NOT"));
+		UE_LOG(LogTemp, Error, TEXT("'%s'::Init: CurrentSavingInstance is NOT"),
+			*GetNameSafe(this));
 	}
 
 	UpdateGameData();

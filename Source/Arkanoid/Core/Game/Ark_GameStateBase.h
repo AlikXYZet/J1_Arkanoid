@@ -90,7 +90,8 @@ public:
 	int32 CurrentLives = 3;
 
 	// Количество Мячей в буфере (Обновляется Пешкой)
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters", meta = (ClampMin = "1", UIMin = "1"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters",
+		meta = (ClampMin = "1", UIMin = "1"))
 	int32 BufferBallCounter = 3;
 
 	//

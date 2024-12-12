@@ -40,10 +40,12 @@ ABlock::ABlock()
 void ABlock::BeginPlay()
 {
 	Super::BeginPlay();
+}
 
-	NumLives = GetRandom(LivesMaterials.Num() - 1);
-
-	ReductionLives();
+void ABlock::Destroyed()
+{
+	// PS: В нашем случае, здесь логику лучше не прописывать, ибо она вызывается даже в Конструкторе
+	Super::Destroyed();
 }
 //--------------------------------------------------------------------------------------
 
@@ -62,14 +64,13 @@ void ABlock::AddScores()
 
 
 
-/* ---   Destroyed   --- */
+/* ---   Init   --- */
 
-void ABlock::Destroyed()
+void ABlock::Init()
 {
-	SpawnGift();
-	AddScores();
-
-	Super::Destroyed();
+	// Установить количество жизней блока и изменить материал
+	NumLives = GetRandom(LivesMaterials.Num() - 1);
+	ReductionLives();
 }
 
 void ABlock::ReductionLives()
@@ -85,6 +86,8 @@ void ABlock::ReductionLives()
 	// Уничтожить или сменить материал
 	if (NumLives < 0)
 	{
+		SpawnGift();
+		AddScores();
 		Destroy();
 	}
 	else

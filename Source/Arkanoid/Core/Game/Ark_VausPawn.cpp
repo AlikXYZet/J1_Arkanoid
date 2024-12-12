@@ -70,7 +70,8 @@ void AArk_VausPawn::BeginPlay()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("AArk_VausPawn::BeginPlay: pVausActor is NOT"));
+		UE_LOG(LogTemp, Error, TEXT("'%s'::BeginPlay: pVausActor is NOT"),
+			*GetNameSafe(this));
 	}
 
 	CalculateMoveLimit_Y();
@@ -183,10 +184,6 @@ void AArk_VausPawn::CalculateMoveLimit_Y()
 		// PS: Исправляет баг выхода каретки за пределы,
 		// при увеличении её ширины и её местоположении около края Расчётного лимита
 	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("AArk_VausPawn::CalculateMoveLimit_Y: pVausActor is NOT"));
-	}
 }
 //--------------------------------------------------------------------------------------
 
@@ -246,10 +243,6 @@ void AArk_VausPawn::AddWidth(const float iAddValue)
 
 		CalculateMoveLimit_Y();
 	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("AArk_VausPawn::AddWidth: pVausActor is NOT"));
-	}
 }
 
 void AArk_VausPawn::SetBallsModeForTime(const float iTime, const EBallMode iMode)
@@ -306,10 +299,6 @@ void AArk_VausPawn::ResetDefaultTransform()
 	{
 		pVausActor->ResetWidth();
 	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("AArk_VausPawn::ResetDefaultTransform: pVausActor is NOT"));
-	}
 }
 
 void AArk_VausPawn::InitStatisticsSystem()
@@ -322,7 +311,8 @@ void AArk_VausPawn::InitStatisticsSystem()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("AArk_VausPawn::Init: CurrentArkGameState is NOT"));
+		UE_LOG(LogTemp, Error, TEXT("'%s'::InitStatisticsSystem: CurrentArkGameState is NOT"),
+			*GetNameSafe(this));
 	}
 
 	BaseLocation = VausComponent->GetRelativeLocation();

@@ -46,11 +46,13 @@ public:
 	/* ---   Components   --- */
 
 	// Актор каретки
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components,
+		meta = (AllowPrivateAccess = "true"))
 	UChildActorComponent* VausComponent = nullptr;
 
 	// Камера Игрока
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components,
+		meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* Camera = nullptr;
 	//-------------------------------------------
 
@@ -100,7 +102,8 @@ public:
 	TSubclassOf<ABall> BallType;
 
 	// Минимальное значение Коэффициента перемещения
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters", meta = (ClampMin = "0.5", UIMin = "0.5"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters",
+		meta = (ClampMin = "0.5", UIMin = "0.5"))
 	float MinMoveCoeff = 1.f;
 
 	//
@@ -170,7 +173,7 @@ private:
 	float CurrentMoveLimit_Y;
 
 	//
-	
+
 	// Расчитать лимит передвижения каретки по оси Y, учитывая её ширину
 	void CalculateMoveLimit_Y();
 	//-------------------------------------------

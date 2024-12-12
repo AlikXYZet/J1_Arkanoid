@@ -15,11 +15,14 @@ struct FIndex2D
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite,
+		meta = (ClampMin = "0", UIMin = "0"))
 	int32 X = 0;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", UIMin = "0"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite,
+		meta = (ClampMin = "0", UIMin = "0"))
 	int32 Y = 0;
+	//-------------------------------------------
 
 
 
@@ -27,14 +30,49 @@ struct FIndex2D
 
 	FIndex2D() {};
 
+	FIndex2D(const FIndex2D& Second);
+
 	FIndex2D(const int32& iX, const int32& iY);
+	FIndex2D(const int32& iScale);
+	//-------------------------------------------
+
+
+	/* ---   Operators | =   --- */
+
+	const FIndex2D& operator=(const FIndex2D& Second);
+	bool operator==(const FIndex2D& Second);
+	bool operator!=(const FIndex2D& Second);
 	//-------------------------------------------
 
 
 
-	/* ---   Operators   --- */
+	/* ---   Operators | ><   --- */
 
-	FIndex2D operator-(const int32& Scale) const;
+	bool operator>(const FIndex2D& Second);
+	bool operator>=(const FIndex2D& Second);
+
+	bool operator<(const FIndex2D& Second);
+	bool operator<=(const FIndex2D& Second);
+	//-------------------------------------------
+
+
+
+	/* ---   Operators | +   --- */
+
+	const FIndex2D operator+(const FIndex2D& Second) const;
+	FIndex2D& operator+=(const FIndex2D& Second);
+	FIndex2D& operator++(); // prefix
+	FIndex2D operator++(int32); // postfix
+	//-------------------------------------------
+
+
+
+	/* ---   Operators | -   --- */
+
+	const FIndex2D operator-(const FIndex2D& Second) const;
+	FIndex2D& operator-=(const FIndex2D& Second);
+	FIndex2D& operator--(); // prefix
+	FIndex2D operator--(int32); // postfix
 	//-------------------------------------------
 
 
@@ -44,6 +82,9 @@ struct FIndex2D
 	// Проверка "Внутри" ли указанная позиция
 	// (не выходит ли за количество)
 	bool Within(const FIndex2D& V) const;
+
+	// Расстояние между индексами
+	FIndex2D Distance(const FIndex2D& V) const;
 	//-------------------------------------------
 };
 
@@ -55,4 +96,4 @@ FVector operator*(const FVector& iVector, const FIndex2D& iIndex);
 FVector operator*(const FIndex2D& iIndex, const FVector& iVector);
 //--------------------------------------------------------------------------------------
 
-//UE_LOG(LogTemp, Error, TEXT("Text"));
+//UE_LOG(LogTemp, Error, TEXT("'%s': ** is NOT"), *GetNameSafe(this));

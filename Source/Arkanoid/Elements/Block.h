@@ -53,7 +53,8 @@ public:
 	/* ---   Components   --- */
 
 	/** Меш визуализации мяча */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components,
+		meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* BlockMesh = nullptr;
 	//-------------------------------------------
 
@@ -63,8 +64,13 @@ protected:
 
 	/* ---   Base   --- */
 
-	// Called when the game starts or when spawned
+	/** Переопределяемое собственное событие, определяющее начало игры для этого актера */
 	virtual void BeginPlay() override;
+
+	/** Вызывается, когда этот субъект явно уничтожается во время игрового процесса или в редакторе,
+	* но не вызывается во время потоковой передачи уровней или завершения игрового процесса
+	*/
+	virtual void Destroyed() override;
 	//-------------------------------------------
 
 
@@ -80,13 +86,16 @@ public:
 
 
 
-	/* ---   Destroyed   --- */
+	/* ---   Init   --- */
 
 	// Массив материалов для каждого Уровня жизни блока
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters")
 	TArray<UMaterialInterface*> LivesMaterials;
 
 	//
+
+	/** Инициализация данных блока */
+	void Init();
 
 	/** Установить материал блока согласно его уровню жизни
 	и уменьшить количество оставшихся жизней
@@ -100,7 +109,8 @@ public:
 	/* ---   Gift   --- */
 
 	// Общий шанс появления Подарка
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters", meta = (ClampMin = "0", UIMin = "0"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters",
+		meta = (ClampMin = "0", UIMin = "0"))
 	float GiftChance = 0.1;
 
 	// Массив создаваемых бонусов и антибонусов
@@ -125,15 +135,10 @@ private:
 
 
 
-	/* ---   Destroyed   --- */
+	/* ---   Init   --- */
 
 	// Количество "жизней" блока
+	UPROPERTY()
 	int32 NumLives = -1;
-
-	//
-
-	/** Вызывается, когда этот субъект явно уничтожается во время игрового процесса или в редакторе, но не вызывается во время потоковой передачи уровней или завершения игрового процесса */
-	virtual void Destroyed() override;
 	//-------------------------------------------
-
 };
