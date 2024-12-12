@@ -78,7 +78,7 @@ void ABlocksGenerator::StartGenerator()
 
 	case EGenerationType::Row: // Компоновка рядами через 1
 		lLambda = [](const int32& x, const int32&)
-			{ return bool(x % 2); };
+			{ return !bool(x % 2); };
 		break;
 
 	case EGenerationType::Chess: // В шахматном порядке
