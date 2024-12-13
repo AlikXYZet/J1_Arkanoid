@@ -24,7 +24,8 @@
 AArk_VausPawn::AArk_VausPawn()
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false; // Предварительно
+	PrimaryActorTick.bCanEverTick = true; // Warning: Принудительно!!!
+	//-------------------------------------------
 
 
 
@@ -49,7 +50,7 @@ AArk_VausPawn::AArk_VausPawn()
 
 	// Автоподхват игрока
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
-	// Warning: Данный способ дважды ввызывает PossessedBy(*)
+	// Warning: Данный способ дважды вызывает PossessedBy(*)
 	//-------------------------------------------
 }
 //--------------------------------------------------------------------------------------
@@ -78,6 +79,13 @@ void AArk_VausPawn::BeginPlay()
 
 	InitStatisticsSystem();
 }
+
+void AArk_VausPawn::Tick(float DeltaSeconds)
+{
+	MoveVausForTick(DeltaSeconds);
+
+	Super::Tick(DeltaSeconds);
+}
 //--------------------------------------------------------------------------------------
 
 
@@ -93,16 +101,29 @@ void AArk_VausPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	/* ---   Action   --- */
 
 	PlayerInputComponent->BindAction("BallLaunch", EInputEvent::IE_Released, this, &AArk_VausPawn::BallLaunch);
+
+	PlayerInputComponent->BindAction("MoveVausToRight", EInputEvent::IE_Pressed, this, &AArk_VausPawn::MoveVausToRight);
+	PlayerInputComponent->BindAction("MoveVausToRight", EInputEvent::IE_Released, this, &AArk_VausPawn::NotMoveVausToRight);
+
+	PlayerInputComponent->BindAction("MoveVausToLeft", EInputEvent::IE_Pressed, this, &AArk_VausPawn::MoveVausToLeft);
+	PlayerInputComponent->BindAction("MoveVausToLeft", EInputEvent::IE_Released, this, &AArk_VausPawn::NotMoveVausToLeft);
 	//-------------------------------------------
 
 
 	/* ---   Axis   --- */
 
-	PlayerInputComponent->BindAxis("MoveVaus", this, &AArk_VausPawn::MoveVaus);
+	/*PlayerInputComponent->BindAxis("MoveVaus", this, &AArk_VausPawn::MoveVaus);
+	/* PS: В данном варианте есть проблемы в скорости передвижения каретки:
+	* 1. При нажатии двух клавиш одного направления, скорость удваивается;
+	* 2. Скорость движения каретки сильно зависит от FPS игры.
+	*	Решение:
+	*		Либо фиксировать максимальный FPS,
+	*		Либо пересобрать систему управления через Tick() с учётом DeltaTime.
+	*/
 	//-------------------------------------------
 }
 
-void AArk_VausPawn::MoveVaus(float iValue)
+/*void AArk_VausPawn::MoveVaus(float iValue)
 {
 	// Корректировка при суммировании нажатий
 	if (iValue)
@@ -141,7 +162,7 @@ void AArk_VausPawn::MoveVaus(float iValue)
 			SpawnYaw *= -1;
 		}
 	}
-}
+}*/
 
 void AArk_VausPawn::BallLaunch()
 {
@@ -161,11 +182,73 @@ void AArk_VausPawn::BallLaunch()
 		}
 	}
 }
+
+void AArk_VausPawn::MoveVausToRight()
+{
+	DirectionOfMovement = 1;
+}
+
+void AArk_VausPawn::NotMoveVausToRight()
+{
+	if (DirectionOfMovement == 1)
+	{
+		DirectionOfMovement = 0;
+	}
+}
+
+void AArk_VausPawn::MoveVausToLeft()
+{
+	DirectionOfMovement = -1;
+}
+
+void AArk_VausPawn::NotMoveVausToLeft()
+{
+	if (DirectionOfMovement == -1)
+	{
+		DirectionOfMovement = 0;
+	}
+}
 //--------------------------------------------------------------------------------------
 
 
 
 /* ---   Move   --- */
+
+void AArk_VausPawn::MoveVausForTick(const float& iDeltaSeconds)
+{
+	if (DirectionOfMovement)
+	{
+		// Текущая позиция на оси Y
+		float lCurrent_Y = VausComponent->GetRelativeLocation().Y;
+
+		// Заданное смещение местоположения по оси Y
+		float lOffset_Y = DirectionOfMovement * MoveCoeff * iDeltaSeconds;
+
+		// Контроль местоположения каретки в заданных пределах
+		if (lOffset_Y + lCurrent_Y > CurrentMoveLimit_Y)
+		{
+			VausComponent->SetRelativeLocation(FVector(0, CurrentMoveLimit_Y, 0));
+		}
+		else if (lOffset_Y + lCurrent_Y < -CurrentMoveLimit_Y)
+		{
+			VausComponent->SetRelativeLocation(FVector(0, -CurrentMoveLimit_Y, 0));
+		}
+		else
+		{
+			VausComponent->AddLocalOffset(FVector(0, lOffset_Y, 0));
+		}
+
+		if (pVausActor)
+			pVausActor->MoveReaction(lOffset_Y);
+
+		// Контроль спавна мяча в направлении движения
+		if ((SpawnYaw < 0 && DirectionOfMovement > 0)
+			|| (SpawnYaw > 0 && DirectionOfMovement < 0))
+		{
+			SpawnYaw *= -1;
+		}
+	}
+}
 
 void AArk_VausPawn::CalculateMoveLimit_Y()
 {
@@ -180,7 +263,14 @@ void AArk_VausPawn::CalculateMoveLimit_Y()
 		CurrentMoveLimit_Y = MoveLimit_Y - lExtent.Y;
 
 		// Поправить местоположение каретки
-		MoveVaus(0);
+		if (VausComponent->GetRelativeLocation().Y > CurrentMoveLimit_Y)
+		{
+			VausComponent->SetRelativeLocation(FVector(0, CurrentMoveLimit_Y, 0));
+		}
+		else if (VausComponent->GetRelativeLocation().Y < -CurrentMoveLimit_Y)
+		{
+			VausComponent->SetRelativeLocation(FVector(0, -CurrentMoveLimit_Y, 0));
+		}
 		// PS: Исправляет баг выхода каретки за пределы,
 		// при увеличении её ширины и её местоположении около края Расчётного лимита
 	}
