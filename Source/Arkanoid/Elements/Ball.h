@@ -102,7 +102,7 @@ public:
 	// Начальная (стартовая) скорость
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters|Velocity",
 		meta = (ClampMin = "1", UIMin = "1"))
-	float StartingVelocity = 500.f;
+	float StartingVelocity = 300.f;
 
 	// Минимальная скорость
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters|Velocity",
