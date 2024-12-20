@@ -227,11 +227,11 @@ void AArk_VausPawn::MoveVausForTick(const float& iDeltaSeconds)
 		// Контроль местоположения каретки в заданных пределах
 		if (lOffset_Y + lCurrent_Y > CurrentMoveLimit_Y)
 		{
-			VausComponent->SetRelativeLocation(FVector(0, CurrentMoveLimit_Y, 0));
+			SetLocationVausOnY(CurrentMoveLimit_Y);
 		}
 		else if (lOffset_Y + lCurrent_Y < -CurrentMoveLimit_Y)
 		{
-			VausComponent->SetRelativeLocation(FVector(0, -CurrentMoveLimit_Y, 0));
+			SetLocationVausOnY(-CurrentMoveLimit_Y);
 		}
 		else
 		{
@@ -265,15 +265,23 @@ void AArk_VausPawn::CalculateMoveLimit_Y()
 		// Поправить местоположение каретки
 		if (VausComponent->GetRelativeLocation().Y > CurrentMoveLimit_Y)
 		{
-			VausComponent->SetRelativeLocation(FVector(0, CurrentMoveLimit_Y, 0));
+			SetLocationVausOnY(CurrentMoveLimit_Y);
 		}
 		else if (VausComponent->GetRelativeLocation().Y < -CurrentMoveLimit_Y)
 		{
-			VausComponent->SetRelativeLocation(FVector(0, -CurrentMoveLimit_Y, 0));
+			SetLocationVausOnY(-CurrentMoveLimit_Y);
 		}
 		// PS: Исправляет баг выхода каретки за пределы,
 		// при увеличении её ширины и её местоположении около края Расчётного лимита
 	}
+}
+
+void AArk_VausPawn::SetLocationVausOnY(float iY)
+{
+	FVector lCurrentLocation = VausComponent->GetRelativeLocation();
+	lCurrentLocation.Y = iY;
+
+	VausComponent->SetRelativeLocation(lCurrentLocation);
 }
 //--------------------------------------------------------------------------------------
 

@@ -16,6 +16,7 @@
 
 // UE:
 class UProjectileMovementComponent;
+class USoundBase;
 
 // Plugins:
 class UNiagaraComponent;
@@ -131,6 +132,10 @@ public:
 		meta = (DisplayName = "Scale 3D"))
 	FVector Scale3DForHitFX = FVector(0.1f);
 
+	// Звук столкновения Мяча
+	UPROPERTY(EditAnywhere, Category = "Parameters|Hit")
+	USoundBase* HitSound = nullptr;
+
 	//
 
 	/**	Событие, когда этот субъект соприкасается с другим */
@@ -186,6 +191,14 @@ public:
 
 
 private:
+
+	/* ---   Collision   --- */
+
+	/** Воспроизвести звук удара */
+	void PlayHitSound();
+	//-------------------------------------------
+
+
 
 	/* ---   Gift   --- */
 

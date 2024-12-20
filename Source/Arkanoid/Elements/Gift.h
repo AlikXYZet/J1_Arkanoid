@@ -99,6 +99,12 @@ public:
 
 	/* ---   Reactions   --- */
 
+	/* Звук взятия данного Подарка */
+	UPROPERTY(EditAnywhere, Category = "Parameters")
+	USoundBase* SoundOfTaking = nullptr;
+
+	//
+
 	/**	Реакция на подбор Пешкой */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Reactions",
 		meta = (DisplayName = "Is Taken"))
@@ -108,6 +114,14 @@ public:
 
 
 private:
+
+	/* ---   Reactions   --- */
+
+	/**	Взятие данного Подарка */
+	void Taking(AArk_VausPawn* VausPawn);
+	//-------------------------------------------
+
+
 
 	/* ---   FX   --- */
 

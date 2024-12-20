@@ -115,6 +115,12 @@ void ABall::NotifyHit(
 	if (ABlock* lHitBlock = Cast<ABlock>(Other))
 	{
 		lHitBlock->ReductionLives();
+
+		// Воспроизвести звук удара, если блок не уничтожен
+		if (lHitBlock->GetNumLives() > 0)
+		{
+			PlayHitSound();
+		}
 	}
 	else
 	{
@@ -129,6 +135,9 @@ void ABall::NotifyHit(
 				ProjectileMovement->Velocity.X -= 10.f;
 			}
 		}
+
+		// Воспроизвести звук удара
+		PlayHitSound();
 	}
 
 
@@ -173,10 +182,18 @@ void ABall::NotifyActorBeginOverlap(AActor* OtherActor)
 
 	if (CurrentMode == EBallMode::Fire)
 	{
-		if (ABlock* lHitBlock = Cast<ABlock>(OtherActor))
+		if (ABlock* lOverlapBlock = Cast<ABlock>(OtherActor))
 		{
-			lHitBlock->Destroy();
+			lOverlapBlock->DestroyBlock();
 		}
+	}
+}
+
+void ABall::PlayHitSound()
+{
+	if (HitSound)
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), HitSound);
 	}
 }
 //--------------------------------------------------------------------------------------

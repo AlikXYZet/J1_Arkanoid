@@ -27,7 +27,7 @@ struct FGiftType
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<AGift> GiftType;
+	TSoftClassPtr<AGift> GiftType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AppearanceChance = 1.f;
@@ -77,31 +77,49 @@ protected:
 
 public:
 
+	/* ---   Base   --- */
+
+	/** Инициализация данных блока */
+	void Init();
+	//-------------------------------------------
+
+
+
 	/* ---   Statistics   --- */
 
-	// Количество очков за блок
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters")
+	/* Количество очков за блок */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters|Statistics")
 	int32 ScoreNumber = 100;
 	//-------------------------------------------
 
 
 
-	/* ---   Init   --- */
+	/* ---   Lives   --- */
+
+	// Звук уничтожения Блока
+	UPROPERTY(EditAnywhere, Category = "Parameters|Lives")
+	USoundBase* DestroySound = nullptr;
 
 	// Массив материалов для каждого Уровня жизни блока
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters|Lives")
 	TArray<UMaterialInterface*> LivesMaterials;
 
 	//
-
-	/** Инициализация данных блока */
-	void Init();
 
 	/** Установить материал блока согласно его уровню жизни
 	и уменьшить количество оставшихся жизней
 	@note	Запускает уничтожение Блока при Количестве оставшихся жизней меньше 0
 	*/
 	void ReductionLives();
+
+	/** Получить количество жизней у данного блока */
+	int32 GetNumLives() const;
+
+	/** Воспроизвести звук уничтожения */
+	void PlayDestroySound();
+
+	/** Уничтожить блок с учётом необходимой логики */
+	void DestroyBlock();
 	//-------------------------------------------
 
 
@@ -109,12 +127,13 @@ public:
 	/* ---   Gift   --- */
 
 	// Общий шанс появления Подарка
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters",
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters|Gift",
 		meta = (ClampMin = "0", UIMin = "0"))
 	float GiftChance = 0.1;
 
 	// Массив создаваемых бонусов и антибонусов
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters|Gift",
+		meta = (TitleProperty = GiftType))
 	TArray<FGiftType> Gifts;
 
 	//
@@ -135,7 +154,7 @@ private:
 
 
 
-	/* ---   Init   --- */
+	/* ---   Lives   --- */
 
 	// Количество "жизней" блока
 	UPROPERTY()

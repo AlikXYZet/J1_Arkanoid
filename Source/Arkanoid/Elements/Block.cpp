@@ -3,6 +3,9 @@
 // Base:
 #include "Block.h"
 
+// UE:
+#include "Kismet/GameplayStatics.h"
+
 // Interaction:
 #include "Arkanoid/Tools/MyRandom.h"
 #include "Gift.h"
@@ -47,6 +50,13 @@ void ABlock::Destroyed()
 	// PS: В нашем случае, здесь логику лучше не прописывать, ибо она вызывается даже в Конструкторе
 	Super::Destroyed();
 }
+
+void ABlock::Init()
+{
+	// Установить количество жизней блока и изменить материал
+	NumLives = GetRandom(LivesMaterials.Num() - 1);
+	ReductionLives();
+}
 //--------------------------------------------------------------------------------------
 
 
@@ -64,14 +74,7 @@ void ABlock::AddScores()
 
 
 
-/* ---   Init   --- */
-
-void ABlock::Init()
-{
-	// Установить количество жизней блока и изменить материал
-	NumLives = GetRandom(LivesMaterials.Num() - 1);
-	ReductionLives();
-}
+/* ---   Lives   --- */
 
 void ABlock::ReductionLives()
 {
@@ -86,15 +89,34 @@ void ABlock::ReductionLives()
 	// Уничтожить или сменить материал
 	if (NumLives < 0)
 	{
-		SpawnGift();
-		AddScores();
-		Destroy();
+		DestroyBlock();
 	}
 	else
 	{
 		BlockMesh->SetMaterial(0, LivesMaterials[NumLives]);
 		--NumLives;
 	}
+}
+
+int32 ABlock::GetNumLives() const
+{
+	return NumLives;
+}
+
+void ABlock::PlayDestroySound()
+{
+	if (DestroySound)
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), DestroySound);
+	}
+}
+
+void ABlock::DestroyBlock()
+{
+	SpawnGift();
+	AddScores();
+	Destroy();
+	PlayDestroySound();
 }
 //--------------------------------------------------------------------------------------
 

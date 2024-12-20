@@ -82,16 +82,28 @@ void AGift::NotifyActorBeginOverlap(AActor* OtherActor)
 	}
 	else if (AVaus* lVaus = Cast<AVaus>(OtherActor))
 	{
-		EventIsTaken(lVaus->GetPawnPointer());
-
-		Destroy();
+		Taking(lVaus->GetPawnPointer());
 	}
 	else if (AArk_VausPawn* lPawn = Cast<AArk_VausPawn>(OtherActor))
 	{
-		EventIsTaken(lPawn);
-
-		Destroy();
+		Taking(lPawn);
 	}
+}
+//--------------------------------------------------------------------------------------
+
+
+
+/* ---   Reactions   --- */
+
+void AGift::Taking(AArk_VausPawn* iVausPawn)
+{
+	if (SoundOfTaking)
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), SoundOfTaking);
+	}
+
+	EventIsTaken(iVausPawn);
+	Destroy();
 }
 //--------------------------------------------------------------------------------------
 
