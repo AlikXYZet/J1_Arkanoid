@@ -111,7 +111,7 @@ public:
 
 	// Минимальное значение Коэффициента перемещения
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Parameters",
-		meta = (ClampMin = "0.5", UIMin = "0.5"))
+		meta = (ClampMin = "10", UIMin = "10"))
 	float MinMoveCoeff = 100.f;
 
 	//
@@ -190,7 +190,7 @@ private:
 	int8 DirectionOfMovement = 0;
 
 	// Коэффициент перемещения каретки
-	float MoveCoeff = 250;
+	float MoveCoeff = 300;
 
 	// Расчётный лимит передвижения каретки по оси Y, учитывающий её ширину
 	float CurrentMoveLimit_Y;
