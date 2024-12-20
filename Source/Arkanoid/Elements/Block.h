@@ -27,7 +27,7 @@ struct FGiftType
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSoftClassPtr<AGift> GiftType;
+	TSubclassOf<AGift> GiftType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AppearanceChance = 1.f;

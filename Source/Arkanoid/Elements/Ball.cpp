@@ -114,13 +114,13 @@ void ABall::NotifyHit(
 
 	if (ABlock* lHitBlock = Cast<ABlock>(Other))
 	{
-		lHitBlock->ReductionLives();
-
 		// Воспроизвести звук удара, если блок не уничтожен
-		if (lHitBlock->GetNumLives() > 0)
+		if (lHitBlock->GetNumLives() >= 0)
 		{
 			PlayHitSound();
 		}
+
+		lHitBlock->ReductionLives();
 	}
 	else
 	{

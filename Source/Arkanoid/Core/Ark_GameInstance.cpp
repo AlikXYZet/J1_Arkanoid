@@ -5,6 +5,7 @@
 
 // UE:
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 // Interaction:
 #include "Arkanoid/Tools/Saving/SavedGameData.h"
@@ -17,6 +18,8 @@
 void UArk_GameInstance::Init()
 {
 	Super::Init();
+
+	UKismetSystemLibrary::ExecuteConsoleCommand(GetWorld(), "t.MaxFPS 60");
 
 	GameSavingInit();
 	LevelsControlInit();
